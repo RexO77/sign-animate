@@ -6,24 +6,21 @@
 
 /**
  * Parse an SVG path `d` string and return its bounding box.
- * Handles M, L, Q, C, Z commands (covers ImageTracer & our outline output).
+ * Handles both absolute (MLHVCSQTA) and relative (mlhvcsqta) commands,
+ * tracking the current point for relative coordinate resolution.
  */
 export function getPathBBox(d) {
     if (!d) return null;
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-
-    // Extract all coordinate pairs from the path string
-    // Match patterns like "M 100 200", "L100,200", "Q 10 20, 30 40"
-    const numRegex = /-?\d+\.?\d*/g;
-    const cmdRegex = /[MLHVCSQTAZ]/gi;
+    let cx = 0, cy = 0; // current point
+    let sx = 0, sy = 0; // start of current subpath (for Z)
 
     let currentCmd = '';
     let nums = [];
-    const tokens = d.match(/([MLHVCSQTAZ]|-?\d+\.?\d*)/gi) || [];
+    const tokens = d.match(/([MLHVCSQTAZmlhvcsqtaz]|-?\d+\.?\d*)/g) || [];
 
     for (const token of tokens) {
-        if (token.match(/^[MLHVCSQTAZ]$/i)) {
-            // Process previous command's accumulated numbers
+        if (token.match(/^[MLHVCSQTAZmlhvcsqtaz]$/)) {
             processNums(currentCmd, nums);
             currentCmd = token;
             nums = [];
@@ -31,32 +28,77 @@ export function getPathBBox(d) {
             nums.push(parseFloat(token));
         }
     }
-    // Process final command
     processNums(currentCmd, nums);
 
     function processNums(cmd, numbers) {
-        if (!cmd || numbers.length === 0) return;
+        if (!cmd) return;
+        const abs = cmd === cmd.toUpperCase();
         const c = cmd.toUpperCase();
+
+        if (c === 'Z') {
+            cx = sx; cy = sy;
+            return;
+        }
+        if (numbers.length === 0) return;
+
         switch (c) {
-            case 'M': case 'L': case 'T':
-                for (let i = 0; i < numbers.length - 1; i += 2) update(numbers[i], numbers[i + 1]);
+            case 'M':
+                for (let i = 0; i < numbers.length - 1; i += 2) {
+                    const x = abs ? numbers[i] : cx + numbers[i];
+                    const y = abs ? numbers[i + 1] : cy + numbers[i + 1];
+                    update(x, y);
+                    cx = x; cy = y;
+                    if (i === 0) { sx = x; sy = y; }
+                }
+                break;
+            case 'L': case 'T':
+                for (let i = 0; i < numbers.length - 1; i += 2) {
+                    const x = abs ? numbers[i] : cx + numbers[i];
+                    const y = abs ? numbers[i + 1] : cy + numbers[i + 1];
+                    update(x, y);
+                    cx = x; cy = y;
+                }
                 break;
             case 'H':
-                for (const n of numbers) { minX = Math.min(minX, n); maxX = Math.max(maxX, n); }
+                for (const n of numbers) {
+                    const x = abs ? n : cx + n;
+                    update(x, cy);
+                    cx = x;
+                }
                 break;
             case 'V':
-                for (const n of numbers) { minY = Math.min(minY, n); maxY = Math.max(maxY, n); }
-                break;
-            case 'Q': case 'S':
-                for (let i = 0; i < numbers.length - 1; i += 2) update(numbers[i], numbers[i + 1]);
+                for (const n of numbers) {
+                    const y = abs ? n : cy + n;
+                    update(cx, y);
+                    cy = y;
+                }
                 break;
             case 'C':
-                for (let i = 0; i < numbers.length - 1; i += 2) update(numbers[i], numbers[i + 1]);
+                for (let i = 0; i < numbers.length - 5; i += 6) {
+                    for (let j = 0; j < 3; j++) {
+                        const x = abs ? numbers[i + j * 2] : cx + numbers[i + j * 2];
+                        const y = abs ? numbers[i + j * 2 + 1] : cy + numbers[i + j * 2 + 1];
+                        update(x, y);
+                        if (j === 2) { cx = x; cy = y; }
+                    }
+                }
+                break;
+            case 'S': case 'Q':
+                for (let i = 0; i < numbers.length - 3; i += 4) {
+                    for (let j = 0; j < 2; j++) {
+                        const x = abs ? numbers[i + j * 2] : cx + numbers[i + j * 2];
+                        const y = abs ? numbers[i + j * 2 + 1] : cy + numbers[i + j * 2 + 1];
+                        update(x, y);
+                        if (j === 1) { cx = x; cy = y; }
+                    }
+                }
                 break;
             case 'A':
-                // Arc: skip radii/flags, take endpoint
-                for (let i = 0; i < numbers.length - 1; i += 7) {
-                    if (i + 6 < numbers.length) update(numbers[i + 5], numbers[i + 6]);
+                for (let i = 0; i < numbers.length - 6; i += 7) {
+                    const x = abs ? numbers[i + 5] : cx + numbers[i + 5];
+                    const y = abs ? numbers[i + 6] : cy + numbers[i + 6];
+                    update(x, y);
+                    cx = x; cy = y;
                 }
                 break;
         }

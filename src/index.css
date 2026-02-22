@@ -1,1 +1,110 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --color-brand-peach: #FFBE86;
+  --color-brand-yellow: #FFE156;
+  --color-brand-cream: #FFE9CE;
+  --color-brand-pink: #FFB5C2;
+  --color-brand-blue: #3777FF;
+}
+
+/* ─── Custom range slider ─────────────────────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 20px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #FFE9CE, #FFBE86);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3777FF;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(55, 119, 255, 0.3);
+  margin-top: -6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(55, 119, 255, 0.4);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #FFE9CE, #FFBE86);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3777FF;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(55, 119, 255, 0.3);
+}
+
+/* ─── Paper texture for signature preview ─────────────────────────────────── */
+.paper-texture {
+  background-color: #fffcf8;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(255, 190, 134, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse at 80% 50%, rgba(255, 233, 206, 0.2) 0%, transparent 70%);
+}
+
+/* ─── Ruled lines for draw canvas ─────────────────────────────────────────── */
+.ruled-lines {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 39px,
+      rgba(255, 190, 134, 0.15) 39px,
+      rgba(255, 190, 134, 0.15) 40px
+    );
+  background-position: 0 10px;
+}
+
+/* ─── Upload dropzone paper ───────────────────────────────────────────────── */
+.dropzone-paper {
+  background-color: #fffaf4;
+  background-image:
+    radial-gradient(circle at 30% 70%, rgba(255, 190, 134, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, rgba(255, 181, 194, 0.06) 0%, transparent 50%);
+}
+
+/* ─── Code block styling ──────────────────────────────────────────────────── */
+.code-block {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+/* ─── Smooth page background ──────────────────────────────────────────────── */
+.page-bg {
+  background: linear-gradient(
+    160deg,
+    #FFE9CE 0%,
+    #fff5e8 20%,
+    #fffaf4 40%,
+    #fff8f5 60%,
+    #fef8fa 80%,
+    #f8f4ff 100%
+  );
+}
