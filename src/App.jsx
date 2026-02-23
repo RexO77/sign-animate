@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, X, Check, Copy, ChevronDown, ChevronUp, PenTool } from 'lucide-react';
+import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, X, Check, Copy, ChevronDown, ChevronUp, PenTool, Code, FileImage } from 'lucide-react';
 import { orderPaths, computeTiming, getPathBBox } from './pathOrder';
 
 // ─── MATH & DRAWING HELPERS ───────────────────────────────────────────────────
@@ -223,9 +223,75 @@ ${innerGroup}
 </div>`;
 }
 
+// ─── STATIC SVG GENERATOR (for image export) ─────────────────────────────────
+function generateStaticSVG({ paths, isFill, viewBox, svgTransform }) {
+  const vb = isFill ? `0 0 ${CANVAS_W} ${CANVAS_H}` : (viewBox || '0 0 646 226');
+  const fillColor = '#0f172a';
+
+  const pathsMarkup = paths.map(d =>
+    `    <path d="${d}" fill-rule="evenodd"/>`
+  ).join('\n');
+
+  const innerGroup = svgTransform && !isFill
+    ? `  <g transform="${svgTransform}" fill="${fillColor}" stroke="none">\n${pathsMarkup}\n  </g>`
+    : `  <g fill="${fillColor}" stroke="none">\n${pathsMarkup}\n  </g>`;
+
+  return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">\n${innerGroup}\n</svg>`;
+}
+
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadPNG(svgString, scale = 3) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svgString, 'image/svg+xml');
+  const svgEl = doc.querySelector('svg');
+  const vb = svgEl?.getAttribute('viewBox')?.split(/\s+/).map(Number) || [0, 0, 600, 200];
+  const w = vb[2], h = vb[3];
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w * scale;
+  canvas.height = h * scale;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const img = new Image();
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'signature.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }, 'image/png');
+  };
+  img.src = url;
+}
+
 // ─── EXPORT MODAL ─────────────────────────────────────────────────────────────
-function ExportModal({ snippet, onClose }) {
+function ExportModal({ snippet, staticSVG, onClose }) {
   const [copied, setCopied] = useState(false);
+  const [activeExportTab, setActiveExportTab] = useState('code');
   const textareaRef = useRef(null);
 
   const handleCopy = async () => {
@@ -240,6 +306,9 @@ function ExportModal({ snippet, onClose }) {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  const handleDownloadSVG = () => downloadFile(staticSVG, 'signature.svg', 'image/svg+xml');
+  const handleDownloadPNG = () => downloadPNG(staticSVG, 3);
 
   return (
     <motion.div
@@ -260,55 +329,124 @@ function ExportModal({ snippet, onClose }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div>
             <h3 className="text-lg font-semibold text-slate-900 font-display">Export Signature</h3>
-            <p className="text-sm text-slate-500 mt-0.5">Copy the snippet below and paste it into your HTML</p>
+            <p className="text-sm text-slate-500 mt-0.5">Download as image or grab the embeddable code</p>
           </div>
           <Button variant="ghost" onClick={onClose} className="p-2 rounded-lg">
             <X className="w-5 h-5" />
           </Button>
         </div>
 
-        {/* Preview */}
-        <div className="px-6 pt-4 pb-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Preview</p>
-          <div className="paper-texture rounded-xl p-6 border border-slate-200 flex items-center justify-center">
-            <div
-              className="w-full max-w-sm"
-              dangerouslySetInnerHTML={{ __html: snippet }}
-            />
+        {/* Tab switcher */}
+        <div className="px-6 pt-4 pb-0">
+          <div className="inline-flex bg-[#FFE9CE]/40 p-1 rounded-xl">
+            {[
+              { id: 'code', label: 'Code Snippet', Icon: Code },
+              { id: 'image', label: 'Image', Icon: FileImage },
+            ].map(tab => (
+              <motion.button
+                key={tab.id}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setActiveExportTab(tab.id)}
+                className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                  activeExportTab === tab.id
+                    ? 'bg-white shadow-sm text-slate-900'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <tab.Icon className="w-4 h-4" /> {tab.label}
+              </motion.button>
+            ))}
           </div>
         </div>
 
-        {/* Code */}
-        <div className="px-6 pt-3 pb-4 flex-1 overflow-hidden flex flex-col min-h-0">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Embeddable Code</p>
-            <Button
-              variant={copied ? 'export' : 'outline'}
-              onClick={handleCopy}
-              className="px-3 py-1.5 rounded-lg text-xs"
+        <AnimatePresence mode="wait">
+          {activeExportTab === 'code' ? (
+            <motion.div
+              key="code-tab"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col overflow-hidden min-h-0"
             >
-              {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
-            </Button>
-          </div>
-          <div className="flex-1 overflow-auto rounded-xl bg-slate-950 p-4 min-h-0">
-            <pre className="code-block text-slate-300 whitespace-pre-wrap break-all">{snippet}</pre>
-            <textarea
-              ref={textareaRef}
-              value={snippet}
-              readOnly
-              className="sr-only"
-              tabIndex={-1}
-            />
-          </div>
-        </div>
+              {/* Preview */}
+              <div className="px-6 pt-4 pb-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Preview</p>
+                <div className="paper-texture rounded-xl p-6 border border-slate-200 flex items-center justify-center">
+                  <div
+                    className="w-full max-w-sm"
+                    dangerouslySetInnerHTML={{ __html: snippet }}
+                  />
+                </div>
+              </div>
 
-        {/* Footer */}
-        <div className="px-6 py-3 border-t border-[#FFE9CE]/50 bg-[#FFE9CE]/15 flex items-center justify-between">
-          <p className="text-xs text-slate-400">No external dependencies required</p>
-          <Button variant="primary" onClick={handleCopy} className="px-5 py-2.5 rounded-xl text-sm">
-            {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy to Clipboard</>}
-          </Button>
-        </div>
+              {/* Code */}
+              <div className="px-6 pt-3 pb-4 flex-1 overflow-hidden flex flex-col min-h-0">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Embeddable Code</p>
+                  <Button
+                    variant={copied ? 'export' : 'outline'}
+                    onClick={handleCopy}
+                    className="px-3 py-1.5 rounded-lg text-xs"
+                  >
+                    {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
+                  </Button>
+                </div>
+                <div className="flex-1 overflow-auto rounded-xl bg-slate-950 p-4 min-h-0">
+                  <pre className="code-block text-slate-300 whitespace-pre-wrap break-all">{snippet}</pre>
+                  <textarea
+                    ref={textareaRef}
+                    value={snippet}
+                    readOnly
+                    className="sr-only"
+                    tabIndex={-1}
+                  />
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-3 border-t border-[#FFE9CE]/50 bg-[#FFE9CE]/15 flex items-center justify-between">
+                <p className="text-xs text-slate-400">No external dependencies required</p>
+                <Button variant="primary" onClick={handleCopy} className="px-5 py-2.5 rounded-xl text-sm">
+                  {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy to Clipboard</>}
+                </Button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="image-tab"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col overflow-hidden min-h-0"
+            >
+              {/* Image preview */}
+              <div className="px-6 pt-4 pb-4 flex-1">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Preview</p>
+                <div className="paper-texture rounded-xl p-8 border border-slate-200 flex items-center justify-center min-h-[200px]">
+                  <div
+                    className="w-full max-w-md"
+                    dangerouslySetInnerHTML={{ __html: staticSVG }}
+                  />
+                </div>
+                <p className="text-xs text-slate-400 mt-3 text-center">
+                  PNG exports at 3× resolution for crisp display on retina screens
+                </p>
+              </div>
+
+              {/* Download buttons */}
+              <div className="px-6 py-4 border-t border-[#FFE9CE]/50 bg-[#FFE9CE]/15 flex items-center justify-end gap-3">
+                <Button variant="outline" onClick={handleDownloadSVG} className="px-5 py-2.5 rounded-xl text-sm">
+                  <Download className="w-4 h-4" /> Download SVG
+                </Button>
+                <Button variant="primary" onClick={handleDownloadPNG} className="px-5 py-2.5 rounded-xl text-sm">
+                  <FileImage className="w-4 h-4" /> Download PNG
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
@@ -619,15 +757,15 @@ export default function App() {
     uploadedImageRef.current = null;
   };
 
-  const exportSnippet = generateExportSnippet({
+  const exportParams = {
     paths: animatedPaths,
     isFill: isFillMode,
     viewBox: isFillMode ? `0 0 ${CANVAS_W} ${CANVAS_H}` : svgViewBox,
     svgTransform: isFillMode ? '' : svgTransform,
-    animStyle,
-    animSpeed,
-    clusterMeta,
-  });
+  };
+
+  const exportSnippet = generateExportSnippet({ ...exportParams, animStyle, animSpeed, clusterMeta });
+  const staticSVG = generateStaticSVG(exportParams);
 
   const hasResults = animatedPaths.length > 0;
 
@@ -1011,6 +1149,7 @@ export default function App() {
         {showExport && (
           <ExportModal
             snippet={exportSnippet}
+            staticSVG={staticSVG}
             onClose={() => setShowExport(false)}
           />
         )}
