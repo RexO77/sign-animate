@@ -115,50 +115,42 @@ input[type="range"] {
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px;
+  height: 3px;
   border-radius: 9999px;
-  background: linear-gradient(to right, #FFE9CE, #FFBE86);
+  background: #cbd5e1;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #3777FF;
   border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(55, 119, 255, 0.3);
-  margin-top: -6px;
+  box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.2);
+  margin-top: -5.5px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  box-shadow: 0 2px 8px rgba(55, 119, 255, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 1px rgba(55, 119, 255, 0.35);
 }
 
 input[type="range"]::-moz-range-track {
-  height: 4px;
+  height: 3px;
   border-radius: 9999px;
-  background: linear-gradient(to right, #FFE9CE, #FFBE86);
+  background: #cbd5e1;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #3777FF;
   border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(55, 119, 255, 0.3);
-}
-
-/* ─── Paper texture for signature preview ─────────────────────────────────── */
-.paper-texture {
-  background-color: #fffcf8;
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(255, 190, 134, 0.12) 0%, transparent 70%),
-    radial-gradient(ellipse at 80% 50%, rgba(255, 233, 206, 0.2) 0%, transparent 70%);
+  box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.2);
 }
 
 /* ─── Ruled lines for draw canvas ─────────────────────────────────────────── */
@@ -167,19 +159,11 @@ input[type="range"]::-moz-range-thumb {
     repeating-linear-gradient(
       to bottom,
       transparent,
-      transparent 39px,
-      rgba(255, 190, 134, 0.15) 39px,
-      rgba(255, 190, 134, 0.15) 40px
+      transparent 35px,
+      rgba(148, 163, 184, 0.22) 35px,
+      rgba(148, 163, 184, 0.22) 36px
     );
-  background-position: 0 10px;
-}
-
-/* ─── Upload dropzone paper ───────────────────────────────────────────────── */
-.dropzone-paper {
-  background-color: #fffaf4;
-  background-image:
-    radial-gradient(circle at 30% 70%, rgba(255, 190, 134, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 70% 30%, rgba(255, 181, 194, 0.06) 0%, transparent 50%);
+  background-position: 0 8px;
 }
 
 /* ─── Code block styling ──────────────────────────────────────────────────── */
@@ -193,12 +177,8 @@ input[type="range"]::-moz-range-thumb {
 /* ─── Smooth page background ──────────────────────────────────────────────── */
 .page-bg {
   background: linear-gradient(
-    160deg,
-    #FFE9CE 0%,
-    #fff5e8 20%,
-    #fffaf4 40%,
-    #fff8f5 60%,
-    #fef8fa 80%,
-    #f8f4ff 100%
+    180deg,
+    #f8fafc 0%,
+    #f1f5f9 100%
   );
 }
