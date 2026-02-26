@@ -19,7 +19,7 @@ const NoiseOverlay = () => (
 );
 
 // --- Navbar ---
-const Navbar = ({ scrolled }) => {
+const Navbar = ({ scrolled, onTryForFree }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -45,8 +45,12 @@ const Navbar = ({ scrolled }) => {
 
       {/* CTA Button */}
       <div className="hidden md:flex">
-        <button className="bg-accent text-bg px-6 py-2.5 rounded-full font-sans font-semibold text-sm relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]">
-          <span className="relative z-10">Try It Free</span>
+        <button
+          type="button"
+          onClick={onTryForFree}
+          className="bg-accent text-bg px-6 py-2.5 rounded-full font-sans font-semibold text-sm relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+        >
+          <span className="relative z-10">Try for Free</span>
           <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full" />
         </button>
       </div>
@@ -60,7 +64,7 @@ const Navbar = ({ scrolled }) => {
 };
 
 // --- Hero Section ---
-const Hero = ({ onScrollChange }) => {
+const Hero = ({ onScrollChange, onTryForFree }) => {
   const heroRef = useRef(null);
 
   useEffect(() => {
@@ -112,8 +116,12 @@ const Hero = ({ onScrollChange }) => {
           animate · export · embed — in seconds
         </p>
 
-        <button className="hero-element bg-accent text-bg px-8 py-4 rounded-full font-sans font-bold text-lg relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-1">
-          <span className="relative z-10">Try It Free</span>
+        <button
+          type="button"
+          onClick={onTryForFree}
+          className="hero-element bg-accent text-bg px-8 py-4 rounded-full font-sans font-bold text-lg relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-1"
+        >
+          <span className="relative z-10">Try for Free</span>
           <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full" />
         </button>
       </div>
@@ -456,7 +464,7 @@ const SocialProof = () => {
 };
 
 // --- Pricing ---
-const Pricing = () => {
+const Pricing = ({ onTryForFree }) => {
   return (
     <section className="py-32 px-6 md:px-16 w-full max-w-7xl mx-auto">
       <div className="text-center mb-20 max-w-2xl mx-auto">
@@ -496,8 +504,12 @@ const Pricing = () => {
               </li>
             ))}
           </ul>
-          <button className="w-full py-4 rounded-full bg-accent text-bg font-sans font-bold hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20">
-            Try It Free
+          <button
+            type="button"
+            onClick={onTryForFree}
+            className="w-full py-4 rounded-full bg-accent text-bg font-sans font-bold hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20"
+          >
+            Try for Free
           </button>
         </div>
 
@@ -524,7 +536,7 @@ const Pricing = () => {
 };
 
 // --- Final CTA ---
-const FinalCTA = () => {
+const FinalCTA = ({ onTryForFree }) => {
   return (
     <section className="w-full py-32 md:py-48 bg-accent flex flex-col items-center justify-center text-center px-6 rounded-t-[4rem]">
       <div className="max-w-4xl flex flex-col items-center gap-8">
@@ -532,8 +544,12 @@ const FinalCTA = () => {
           <span className="font-sans font-extrabold text-bg/90 text-4xl md:text-[4rem] leading-none">Your signature</span>
           <span className="font-serif italic text-bg text-6xl md:text-[7rem] leading-none">deserves to move.</span>
         </h2>
-        <button className="mt-8 bg-dark text-bg px-10 py-5 rounded-full font-sans font-bold text-xl relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] shadow-2xl">
-          <span className="relative z-10 flex items-center gap-2">Try It Free <span className="group-hover:translate-x-1 transition-transform">→</span></span>
+        <button
+          type="button"
+          onClick={onTryForFree}
+          className="mt-8 bg-dark text-bg px-10 py-5 rounded-full font-sans font-bold text-xl relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] shadow-2xl"
+        >
+          <span className="relative z-10 flex items-center gap-2">Try for Free <span className="group-hover:translate-x-1 transition-transform">→</span></span>
           <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full" />
         </button>
         <p className="font-mono text-bg/70 text-sm mt-4 tracking-wide">
@@ -594,22 +610,22 @@ const Footer = () => {
 };
 
 // --- App Root ---
-function App() {
+function App({ onTryForFree }) {
   const [scrolled, setScrolled] = useState(false);
 
   return (
     <>
       <NoiseOverlay />
-      <Navbar scrolled={scrolled} />
+      <Navbar scrolled={scrolled} onTryForFree={onTryForFree} />
       <main className="w-full flex flex-col items-center overflow-x-hidden">
-        <Hero onScrollChange={setScrolled} />
+        <Hero onScrollChange={setScrolled} onTryForFree={onTryForFree} />
         <DemoStrip />
         <Features />
         <Philosophy />
         <HowItWorks />
         <SocialProof />
-        <Pricing />
-        <FinalCTA />
+        <Pricing onTryForFree={onTryForFree} />
+        <FinalCTA onTryForFree={onTryForFree} />
       </main>
       <Footer />
     </>

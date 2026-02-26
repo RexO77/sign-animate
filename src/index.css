@@ -1,14 +1,52 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', ui-monospace, monospace;
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
+
+  --color-primary: #2E4036;
+  --color-accent: #CC5833;
+  --color-bg: #F2F0E9;
+  --color-dark: #1A1A1A;
+  --color-surface: #E8E5DC;
+  --color-muted: #7A7A6E;
 
   --color-brand-peach: #FFBE86;
   --color-brand-yellow: #FFE156;
   --color-brand-cream: #FFE9CE;
   --color-brand-pink: #FFB5C2;
   --color-brand-blue: #3777FF;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
 }
 
 /* ─── Custom range slider ─────────────────────────────────────────────────── */
