@@ -49,6 +49,62 @@
   animation: blink 1s step-end infinite;
 }
 
+@keyframes heroImageDrift {
+  0% {
+    transform: scale(1.03) translateX(0);
+  }
+
+  50% {
+    transform: scale(1.06) translateX(-1.1%);
+  }
+
+  100% {
+    transform: scale(1.03) translateX(0);
+  }
+}
+
+@keyframes signatureDraw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.5;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes exampleStrokeDraw {
+  0% {
+    stroke-dashoffset: 280;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hero-image-drift {
+  animation: heroImageDrift 22s ease-in-out infinite;
+}
+
+.signature-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: signatureDraw 2.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.example-stroke {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw 2.6s ease-in-out infinite alternate;
+}
+
 /* ─── Custom range slider ─────────────────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
