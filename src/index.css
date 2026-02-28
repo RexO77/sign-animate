@@ -49,33 +49,76 @@
   animation: blink 1s step-end infinite;
 }
 
-@keyframes heroImageDrift {
+@keyframes heroGridShift {
   0% {
-    transform: scale(1.03) translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   50% {
-    transform: scale(1.06) translateX(-1.1%);
+    transform: translate3d(-1.8%, -1.2%, 0);
   }
 
   100% {
-    transform: scale(1.03) translateX(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes heroOrbFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0, -24px, 0) scale(1.05);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes heroOrbWander {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(18px, -18px, 0) scale(1.03);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 @keyframes signatureDraw {
   0% {
     stroke-dashoffset: 1;
-    opacity: 0.5;
+    opacity: 0.45;
   }
 
-  20% {
+  18% {
+    opacity: 1;
+  }
+
+  72% {
+    stroke-dashoffset: 0;
     opacity: 1;
   }
 
   100% {
     stroke-dashoffset: 0;
     opacity: 1;
+  }
+}
+
+@keyframes orbitSweep {
+  0% {
+    stroke-dashoffset: 220;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
   }
 }
 
@@ -89,20 +132,95 @@
   }
 }
 
-.hero-image-drift {
-  animation: heroImageDrift 22s ease-in-out infinite;
+.hero-grid {
+  opacity: 0.18;
+  background-image:
+    linear-gradient(rgba(242, 240, 233, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 240, 233, 0.07) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 1), transparent 74%);
+  animation: heroGridShift 26s ease-in-out infinite;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.hero-orb-one {
+  top: -11rem;
+  right: -8rem;
+  width: 29rem;
+  height: 29rem;
+  background: radial-gradient(circle, rgba(245, 213, 122, 0.38) 0%, rgba(245, 213, 122, 0) 70%);
+  animation: heroOrbFloat 18s ease-in-out infinite;
+}
+
+.hero-orb-two {
+  bottom: -13rem;
+  left: -9rem;
+  width: 34rem;
+  height: 34rem;
+  background: radial-gradient(circle, rgba(204, 88, 51, 0.36) 0%, rgba(204, 88, 51, 0) 72%);
+  animation: heroOrbWander 24s ease-in-out infinite;
+}
+
+.hero-orb-three {
+  top: 20%;
+  left: 54%;
+  width: 22rem;
+  height: 22rem;
+  background: radial-gradient(circle, rgba(62, 95, 134, 0.28) 0%, rgba(62, 95, 134, 0) 72%);
+  animation: heroOrbFloat 20s ease-in-out infinite reverse;
+}
+
+.hero-orbit-line {
+  stroke-dasharray: 6 8;
+  animation: orbitSweep 10s linear infinite;
+}
+
+.hero-tilt-card {
+  transform: perspective(1100px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 220ms ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .signature-draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: signatureDraw 2.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: signatureDraw 3.6s cubic-bezier(0.23, 1, 0.32, 1) infinite;
 }
 
 .example-stroke {
   stroke-dasharray: 280;
   stroke-dashoffset: 280;
   animation: exampleStrokeDraw 2.6s ease-in-out infinite alternate;
+}
+
+@media (hover: none) {
+  .hero-tilt-card {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-grid,
+  .hero-orb-one,
+  .hero-orb-two,
+  .hero-orb-three,
+  .hero-orbit-line,
+  .signature-draw,
+  .example-stroke {
+    animation: none !important;
+  }
+
+  .hero-tilt-card {
+    transition: none;
+    transform: none !important;
+  }
 }
 
 /* ─── Custom range slider ─────────────────────────────────────────────────── */

@@ -2,13 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import gsap from 'gsap';
 
-const HERO_IMAGE = '/rare-hero.jpg';
-const HERO_FALLBACK_IMAGE = '/hero_ink_texture.png';
-
 const NAV_LINKS = [
   { label: 'How it Works', href: '#how-it-works' },
   { label: 'Craft', href: '#craft' },
   { label: 'Examples', href: '#examples' },
+];
+
+const HERO_FORMATS = [
+  { label: 'GIF', detail: 'Loop-ready for socials' },
+  { label: 'MP4', detail: 'Lossless timeline export' },
+  { label: 'SVG', detail: 'Sharp, editable vector' },
+  { label: 'CODE', detail: 'Clean embed snippet' },
 ];
 
 const EXAMPLES = [
@@ -137,20 +141,29 @@ const Navbar = ({ scrolled, onTryForFree }) => {
 
 const Hero = ({ onTryForFree }) => {
   const heroRef = useRef(null);
-  const [heroImageSrc, setHeroImageSrc] = useState(HERO_IMAGE);
+  const previewRef = useRef(null);
+  const [activeFormat, setActiveFormat] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.hero-fade', {
-        y: 26,
+      gsap.from('.hero-reveal', {
+        y: 30,
         opacity: 0,
-        duration: 0.85,
-        stagger: 0.1,
+        duration: 0.9,
+        stagger: 0.11,
         ease: 'power3.out',
       });
     }, heroRef);
 
     return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    const rotation = window.setInterval(() => {
+      setActiveFormat((current) => (current + 1) % HERO_FORMATS.length);
+    }, 2200);
+
+    return () => window.clearInterval(rotation);
   }, []);
 
   const scrollToExamples = () => {
@@ -160,79 +173,166 @@ const Hero = ({ onTryForFree }) => {
     }
   };
 
+  const handleHeroPointerMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    event.currentTarget.style.setProperty('--spot-x', `${x.toFixed(2)}%`);
+    event.currentTarget.style.setProperty('--spot-y', `${y.toFixed(2)}%`);
+  };
+
+  const handleHeroPointerLeave = (event) => {
+    event.currentTarget.style.setProperty('--spot-x', '72%');
+    event.currentTarget.style.setProperty('--spot-y', '26%');
+  };
+
+  const handlePreviewMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width;
+    const py = (event.clientY - rect.top) / rect.height;
+    const rotateY = (px - 0.5) * 8;
+    const rotateX = (0.5 - py) * 8;
+    if (previewRef.current) {
+      previewRef.current.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`);
+      previewRef.current.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`);
+    }
+  };
+
+  const handlePreviewLeave = () => {
+    if (previewRef.current) {
+      previewRef.current.style.setProperty('--tilt-x', '0deg');
+      previewRef.current.style.setProperty('--tilt-y', '0deg');
+    }
+  };
+
   return (
-    <section id="top" ref={heroRef} className="relative min-h-[100dvh] w-full overflow-hidden pt-32 md:pt-36 pb-24 px-6 md:px-14">
-      <div className="absolute inset-0 z-0">
-        <img
-          src={heroImageSrc}
-          alt="Hand-drawn rare signature in warm ink on a dark textured background"
-          onError={() => setHeroImageSrc(HERO_FALLBACK_IMAGE)}
-          className="hero-image-drift w-full h-full object-cover"
+    <section
+      id="top"
+      ref={heroRef}
+      onMouseMove={handleHeroPointerMove}
+      onMouseLeave={handleHeroPointerLeave}
+      style={{ '--spot-x': '72%', '--spot-y': '26%' }}
+      className="relative min-h-[100dvh] w-full overflow-hidden pt-28 md:pt-32 pb-16 md:pb-20 px-6 md:px-14"
+    >
+      <div className="absolute inset-0 -z-10 bg-[#0b1017]">
+        <div className="hero-grid absolute inset-0" />
+        <div
+          className="absolute inset-0 transition-[background] duration-300"
+          style={{ background: 'radial-gradient(circle at var(--spot-x) var(--spot-y), rgba(245, 213, 122, 0.32), rgba(245, 213, 122, 0) 42%)' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(7,10,18,0.45),rgba(7,10,18,0.9))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(231,180,79,0.2),transparent_48%)]" />
+        <div className="hero-orb hero-orb-one" />
+        <div className="hero-orb hero-orb-two" />
+        <div className="hero-orb hero-orb-three" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(8,12,20,0.42),rgba(8,12,20,0.92))]" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-end">
-        <div className="flex flex-col gap-6 md:gap-7">
-          <p className="hero-fade font-mono text-[11px] tracking-[0.2em] uppercase text-bg/75">*rare - craft over shortcuts</p>
-
-          <h1 className="flex flex-col gap-2">
-            <span className="hero-fade font-sans font-extrabold text-bg text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight">
-              Make signatures that feel rare.
+      <div className="relative z-10 max-w-6xl mx-auto min-h-[74vh] grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-10 lg:gap-14 items-center">
+        <div className="flex flex-col gap-7">
+          <h1 className="flex flex-col gap-3">
+            <span className="hero-reveal font-sans font-extrabold text-bg text-5xl sm:text-6xl md:text-7xl leading-[0.94] tracking-tight">
+              Signature animation
+              <br />
+              with precision.
             </span>
-            <span className="hero-fade font-serif italic text-[#f5d57a] text-4xl sm:text-5xl md:text-6xl leading-[0.95]">
-              Free forever. Built for craft.
+            <span className="hero-reveal font-serif italic text-[#f5d57a] text-[2.25rem] sm:text-5xl md:text-6xl leading-[0.95]">
+              Fast, clean, and free.
             </span>
           </h1>
 
-          <p className="hero-fade max-w-2xl font-sans text-lg md:text-xl leading-relaxed text-bg/78">
-            Something rare is not better or worse. It is less seen. SignAnimate helps you turn that unusual handwriting gesture into living motion without charging for the core craft.
+          <p className="hero-reveal max-w-xl font-sans text-lg md:text-xl leading-relaxed text-bg/78">
+            Draw or upload a signature, tune the motion, and export polished GIF, MP4, SVG, or embed code.
           </p>
 
-          <div className="hero-fade flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
+          <div className="hero-reveal flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
             <button
               type="button"
               onClick={onTryForFree}
-              className="min-h-[46px] bg-accent text-bg px-8 py-3 rounded-full font-sans font-semibold text-base hover:brightness-105 transition-all"
+              className="min-h-[48px] bg-accent text-bg px-8 py-3 rounded-full font-sans font-semibold text-base hover:brightness-105 transition-all inline-flex items-center gap-2"
             >
-              Open Editor
+              Open Editor <ArrowRight size={16} />
             </button>
             <button
               type="button"
               onClick={scrollToExamples}
-              className="min-h-[46px] rounded-full border border-bg/30 bg-dark/25 px-6 py-3 text-bg/88 font-sans font-semibold hover:bg-dark/40 transition-colors"
+              className="min-h-[48px] rounded-full border border-bg/28 bg-bg/8 px-6 py-3 text-bg/88 font-sans font-semibold hover:bg-bg/14 transition-colors"
             >
               See Examples
             </button>
           </div>
-
-          <p className="hero-fade font-mono text-xs uppercase tracking-[0.18em] text-bg/62">No account. No paywall. No trial expiration.</p>
         </div>
 
-        <div className="hero-fade rounded-[2rem] border border-bg/18 bg-dark/45 backdrop-blur-xl p-6 md:p-7 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bg/58 mb-3">Signature motion preview</p>
-          <svg viewBox="0 0 560 170" className="w-full overflow-visible">
-            <path
-              className="signature-draw"
-              d="M20,108 C96,38 168,138 226,86 C286,34 352,112 414,70 C454,44 508,68 544,54"
-              fill="none"
-              stroke="#f5d57a"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              pathLength="1"
-            />
+        <div className="hero-reveal relative self-center">
+          <svg viewBox="0 0 620 280" className="absolute -top-12 -left-8 w-[130%] max-w-none opacity-28 pointer-events-none">
+            <path d="M24,206 C154,24 280,308 430,106 C506,6 584,116 614,58" fill="none" className="hero-orbit-line stroke-accent/50" strokeWidth="1.4" />
+            <path d="M20,232 C132,146 248,90 380,160 C484,216 558,124 612,144" fill="none" className="hero-orbit-line stroke-bg/45" strokeWidth="1" />
           </svg>
-          <div className="mt-5 pt-4 border-t border-bg/14 flex items-center justify-between gap-3">
-            <span className="font-sans text-sm text-bg/72">Export GIF, MP4, SVG, and embed code in one pass.</span>
-            <button
-              type="button"
-              onClick={onTryForFree}
-              className="min-h-[44px] shrink-0 rounded-full bg-bg text-dark px-4 py-2 font-sans text-sm font-semibold hover:bg-bg/90 transition-colors inline-flex items-center gap-1"
-            >
-              Open <ArrowRight size={14} />
-            </button>
+
+          <div
+            ref={previewRef}
+            className="hero-tilt-card relative rounded-[2rem] border border-bg/18 bg-[#111723]/88 backdrop-blur-xl p-6 md:p-7 shadow-[0_28px_80px_rgba(0,0,0,0.5)]"
+            onMouseMove={handlePreviewMove}
+            onMouseLeave={handlePreviewLeave}
+            style={{ '--tilt-x': '0deg', '--tilt-y': '0deg' }}
+          >
+            <div className="absolute inset-0 rounded-[2rem] border border-[#f5d57a]/18 pointer-events-none" />
+            <div className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-accent/30 blur-3xl pointer-events-none" />
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bg/58">Live stroke engine</p>
+              <span className="rounded-full border border-bg/20 bg-bg/8 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-bg/68">
+                8ms preview
+              </span>
+            </div>
+
+            <div className="rounded-2xl border border-bg/14 bg-[#0b111b] p-4 md:p-5">
+              <svg viewBox="0 0 560 170" className="w-full overflow-visible">
+                <path
+                  className="signature-draw"
+                  d="M20,108 C96,38 168,138 226,86 C286,34 352,112 414,70 C454,44 508,68 544,54"
+                  fill="none"
+                  stroke="#f5d57a"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  pathLength="1"
+                />
+              </svg>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              {HERO_FORMATS.map((format, index) => (
+                <button
+                  type="button"
+                  key={format.label}
+                  onMouseEnter={() => setActiveFormat(index)}
+                  className={`rounded-xl border px-3 py-2 text-left transition-all ${
+                    index === activeFormat
+                      ? 'border-accent/60 bg-accent/18'
+                      : 'border-bg/14 bg-bg/5 hover:border-bg/30'
+                  }`}
+                >
+                  <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-bg/72">{format.label}</p>
+                  <p className="font-sans text-xs text-bg/62 mt-1">{format.detail}</p>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 h-1 rounded-full bg-bg/10 overflow-hidden">
+              <span
+                className="block h-full rounded-full bg-accent transition-all duration-500"
+                style={{ width: `${((activeFormat + 1) / HERO_FORMATS.length) * 100}%` }}
+              />
+            </div>
+
+            <div className="mt-5 pt-4 border-t border-bg/14 flex items-center justify-between gap-3">
+              <span className="font-sans text-sm text-bg/72">Export GIF, MP4, SVG, and embed code in one pass.</span>
+              <button
+                type="button"
+                onClick={onTryForFree}
+                className="min-h-[44px] shrink-0 rounded-full bg-bg text-dark px-4 py-2 font-sans text-sm font-semibold hover:bg-bg/90 transition-colors inline-flex items-center gap-1"
+              >
+                Open <ArrowRight size={14} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
