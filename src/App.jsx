@@ -6,7 +6,7 @@ import { orderPaths, computeTiming, getPathBBox } from './pathOrder';
 // ─── MATH & DRAWING HELPERS ───────────────────────────────────────────────────
 const CANVAS_W = 600;
 const CANVAS_H = 200;
-const INK_COLOR = '#0f172a';
+const INK_COLOR = '#161311';
 const MIN_WIDTH = 1.2;
 const MAX_WIDTH = 5.5;
 const SMOOTHING = 0.18;
@@ -130,14 +130,14 @@ const ANIMATION_STYLES = [
 
 // ─── BUTTON COMPONENT ─────────────────────────────────────────────────────────
 const Button = ({ children, variant = 'default', className = '', ...props }) => {
-  const base = 'inline-flex items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3777FF]/35 disabled:opacity-45 disabled:pointer-events-none';
+  const base = 'inline-flex items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:opacity-45 disabled:pointer-events-none';
   const variants = {
-    default: 'bg-[#3777FF] text-white hover:bg-[#2f68df]',
-    ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
-    outline: 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
+    default: 'bg-accent text-bg hover:brightness-105',
+    ghost: 'text-primary/85 hover:bg-bg/78 hover:text-dark',
+    outline: 'border-primary/30 bg-bg text-primary hover:bg-bg/72',
     danger: 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100',
-    primary: 'bg-[#3777FF] text-white hover:bg-[#2f68df]',
-    export: 'bg-slate-900 text-white hover:bg-slate-800',
+    primary: 'bg-accent text-bg hover:brightness-105',
+    export: 'bg-dark text-bg hover:bg-dark/90',
   };
   return (
     <Motion.button
@@ -156,7 +156,7 @@ function generateExportSnippet({ paths, isFill, viewBox, svgTransform, animStyle
   const speed = animSpeed || 1;
   const s = 1 / speed;
   const vb = isFill ? `0 0 ${CANVAS_W} ${CANVAS_H}` : (viewBox || '0 0 646 226');
-  const fillColor = '#0f172a';
+  const fillColor = '#161311';
 
   if (animStyle === 'flow' || (animStyle === 'flow' && !isFill)) {
     const maxCluster = clusterMeta?.length
@@ -226,7 +226,7 @@ ${innerGroup}
 // ─── STATIC SVG GENERATOR (for image export) ─────────────────────────────────
 function generateStaticSVG({ paths, isFill, viewBox, svgTransform }) {
   const vb = isFill ? `0 0 ${CANVAS_W} ${CANVAS_H}` : (viewBox || '0 0 646 226');
-  const fillColor = '#0f172a';
+  const fillColor = '#161311';
 
   const pathsMarkup = paths.map(d =>
     `    <path d="${d}" fill-rule="evenodd"/>`
@@ -315,7 +315,7 @@ function ExportModal({ snippet, staticSVG, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-dark/45 p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <Motion.div
@@ -323,13 +323,13 @@ function ExportModal({ snippet, staticSVG, onClose }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 40, scale: 0.95 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-slate-300 bg-white"
+        className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-primary/30 bg-bg"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-primary/20 px-6 py-4">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 font-display">Export Signature</h3>
-            <p className="text-sm text-slate-500 mt-0.5">Download as image or grab the embeddable code</p>
+            <h3 className="text-lg font-semibold text-dark font-display">Export Signature</h3>
+            <p className="text-sm text-muted mt-0.5">Download as image or grab the embeddable code</p>
           </div>
           <Button variant="ghost" onClick={onClose} className="p-2">
             <X className="w-5 h-5" />
@@ -338,7 +338,7 @@ function ExportModal({ snippet, staticSVG, onClose }) {
 
         {/* Tab switcher */}
         <div className="px-6 pt-4 pb-0">
-          <div className="inline-flex rounded-md border border-slate-200 bg-slate-50 p-1">
+          <div className="inline-flex rounded-md border border-primary/20 bg-bg/72 p-1">
             {[
               { id: 'code', label: 'Code Snippet', Icon: Code },
               { id: 'image', label: 'Image', Icon: FileImage },
@@ -349,8 +349,8 @@ function ExportModal({ snippet, staticSVG, onClose }) {
                 onClick={() => setActiveExportTab(tab.id)}
                 className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-semibold transition-colors ${
                   activeExportTab === tab.id
-                    ? 'border border-slate-300 bg-white text-slate-900'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'border border-primary/30 bg-bg text-dark'
+                    : 'text-muted hover:text-primary'
                 }`}
               >
                 <tab.Icon className="w-4 h-4" /> {tab.label}
@@ -371,8 +371,8 @@ function ExportModal({ snippet, staticSVG, onClose }) {
             >
               {/* Preview */}
               <div className="px-6 pt-4 pb-2">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Preview</p>
-                <div className="flex items-center justify-center rounded-md border border-slate-200 bg-slate-50 p-6">
+                <p className="text-xs font-semibold text-muted/75 uppercase tracking-wider mb-2">Preview</p>
+                <div className="flex items-center justify-center rounded-md border border-primary/20 bg-bg/72 p-6">
                   <div
                     className="w-full max-w-sm"
                     dangerouslySetInnerHTML={{ __html: snippet }}
@@ -383,7 +383,7 @@ function ExportModal({ snippet, staticSVG, onClose }) {
               {/* Code */}
               <div className="px-6 pt-3 pb-4 flex-1 overflow-hidden flex flex-col min-h-0">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Embeddable Code</p>
+                  <p className="text-xs font-semibold text-muted/75 uppercase tracking-wider">Embeddable Code</p>
                   <Button
                     variant={copied ? 'export' : 'outline'}
                     onClick={handleCopy}
@@ -392,8 +392,8 @@ function ExportModal({ snippet, staticSVG, onClose }) {
                     {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
                   </Button>
                 </div>
-                <div className="flex-1 overflow-auto rounded-md bg-slate-950 p-4 min-h-0">
-                  <pre className="code-block text-slate-300 whitespace-pre-wrap break-all">{snippet}</pre>
+                <div className="flex-1 overflow-auto rounded-md bg-dark p-4 min-h-0">
+                  <pre className="code-block text-bg/85 whitespace-pre-wrap break-all">{snippet}</pre>
                   <textarea
                     ref={textareaRef}
                     value={snippet}
@@ -405,8 +405,8 @@ function ExportModal({ snippet, staticSVG, onClose }) {
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between border-t border-slate-200 px-6 py-3">
-                <p className="text-xs text-slate-400">No external dependencies required</p>
+              <div className="flex items-center justify-between border-t border-primary/20 px-6 py-3">
+                <p className="text-xs text-muted/75">No external dependencies required</p>
                 <Button variant="primary" onClick={handleCopy} className="px-5 py-2.5 text-sm">
                   {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy to Clipboard</>}
                 </Button>
@@ -423,20 +423,20 @@ function ExportModal({ snippet, staticSVG, onClose }) {
             >
               {/* Image preview */}
               <div className="px-6 pt-4 pb-4 flex-1">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Preview</p>
-                <div className="flex min-h-[200px] items-center justify-center rounded-md border border-slate-200 bg-slate-50 p-8">
+                <p className="text-xs font-semibold text-muted/75 uppercase tracking-wider mb-2">Preview</p>
+                <div className="flex min-h-[200px] items-center justify-center rounded-md border border-primary/20 bg-bg/72 p-8">
                   <div
                     className="w-full max-w-md"
                     dangerouslySetInnerHTML={{ __html: staticSVG }}
                   />
                 </div>
-                <p className="text-xs text-slate-400 mt-3 text-center">
+                <p className="text-xs text-muted/75 mt-3 text-center">
                   PNG exports at 3× resolution for crisp display on retina screens
                 </p>
               </div>
 
               {/* Download buttons */}
-              <div className="flex items-center justify-end gap-3 border-t border-slate-200 px-6 py-4">
+              <div className="flex items-center justify-end gap-3 border-t border-primary/20 px-6 py-4">
                 <Button variant="outline" onClick={handleDownloadSVG} className="px-5 py-2.5 text-sm">
                   <Download className="w-4 h-4" /> Download SVG
                 </Button>
@@ -486,7 +486,7 @@ const Signature = ({ paths, isFill, viewBox, className, clusterMeta, animStyle, 
             </clipPath>
           </defs>
           <g clipPath={`url(#reveal-${animKey})`}>
-            <g transform={svgTransform || undefined} fill="#000000" stroke="none">
+            <g transform={svgTransform || undefined} fill="#161311" stroke="none">
               {paths.map((d, i) => (
                 <path key={i} d={d} fillRule="evenodd" />
               ))}
@@ -504,7 +504,7 @@ const Signature = ({ paths, isFill, viewBox, className, clusterMeta, animStyle, 
         className={`h-auto w-full overflow-hidden ${className || ''}`}
         {...props}
       >
-        <g transform={svgTransform || undefined} fill="#000000" stroke="none">
+        <g transform={svgTransform || undefined} fill="#161311" stroke="none">
           {paths.map((d, i) => {
             const meta = clusterMeta?.[i] || null;
             const { delay, duration } = computeTiming(i, meta, style, speed);
@@ -770,17 +770,17 @@ export default function App() {
   const hasResults = animatedPaths.length > 0;
 
   return (
-    <div className="min-h-screen page-bg flex flex-col font-body text-slate-900">
+    <div className="min-h-screen page-bg flex flex-col font-body text-dark">
       {/* ── Header ── */}
-      <header className="w-full border-b border-slate-200 bg-white/90">
+      <header className="w-full border-b border-primary/20 bg-bg/90">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#3777FF]">
-              <PenTool className="w-5 h-5 text-white" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent">
+              <PenTool className="w-5 h-5 text-bg" />
             </div>
             <div>
-              <h1 className="text-xl font-display font-bold tracking-tight text-slate-900">Signature Animator</h1>
-              <p className="text-xs tracking-wide text-slate-500">Turn any signature into a living animation</p>
+              <h1 className="text-xl font-display font-bold tracking-tight text-dark">Signature Animator</h1>
+              <p className="text-xs tracking-wide text-muted">Turn any signature into a living animation</p>
             </div>
           </div>
         </div>
@@ -802,15 +802,15 @@ export default function App() {
                 exit={{ opacity: 0, y: -10 }}
                 className="mb-8 text-center"
               >
-                <h2 className="mb-2 text-2xl font-display font-semibold text-slate-800">
+                <h2 className="mb-2 text-2xl font-display font-semibold text-dark/90">
                   {activeTab === 'upload' ? 'Upload Your Signature' : 'Draw Your Signature'}
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-muted">
                   {activeTab === 'upload' ? 'Drop an image to digitize and animate' : 'Sign with your mouse or finger, then animate'}
                 </p>
 
                 {/* Tabs */}
-                <div className="mx-auto mt-6 inline-flex rounded-md border border-slate-200 bg-white p-1">
+                <div className="mx-auto mt-6 inline-flex rounded-md border border-primary/20 bg-bg p-1">
                   {[
                     { id: 'upload', label: 'Upload', Icon: ImageIcon },
                     { id: 'draw', label: 'Draw', Icon: Pencil },
@@ -821,8 +821,8 @@ export default function App() {
                       whileTap={{ scale: 0.98 }}
                       className={`flex items-center gap-2 rounded px-6 py-2.5 text-sm font-semibold transition-colors ${
                         activeTab === tab.id
-                          ? 'border border-slate-300 bg-slate-50 text-slate-900'
-                          : 'text-slate-500 hover:text-slate-700'
+                          ? 'border border-primary/30 bg-bg/72 text-dark'
+                          : 'text-muted hover:text-primary'
                       }`}
                     >
                       <tab.Icon className="w-4 h-4" /> {tab.label}
@@ -845,13 +845,13 @@ export default function App() {
                 className="flex flex-col items-center"
               >
                 {/* Signature preview */}
-                <div className="mx-auto flex min-h-[260px] w-full max-w-3xl items-center justify-center border border-slate-200 bg-white p-8">
+                <div className="mx-auto flex min-h-[260px] w-full max-w-3xl items-center justify-center border border-primary/20 bg-bg p-8">
                   <Signature
                     paths={animatedPaths}
                     isFill={isFillMode}
                     viewBox={isFillMode ? `0 0 ${CANVAS_W} ${CANVAS_H}` : svgViewBox}
                     svgTransform={isFillMode ? '' : svgTransform}
-                    className="w-full text-slate-900"
+                    className="w-full text-dark"
                     clusterMeta={clusterMeta}
                     animStyle={animStyle}
                     animSpeed={animSpeed}
@@ -896,10 +896,10 @@ export default function App() {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="w-full max-w-3xl overflow-hidden"
                     >
-                      <div className="mt-5 divide-y divide-slate-200 border border-slate-200 bg-white">
+                      <div className="mt-5 divide-y divide-primary/20 border border-primary/20 bg-bg">
                         {/* Animation Style */}
                         <div className="p-4">
-                          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500 font-body">Animation Style</p>
+                          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted font-body">Animation Style</p>
                           <div className="flex gap-2">
                             {ANIMATION_STYLES.map(s => (
                               <Motion.button
@@ -908,8 +908,8 @@ export default function App() {
                                 onClick={() => { setAnimStyle(s.id); setAnimKey(k => k + 1); }}
                                 className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2.5 text-sm font-semibold transition-colors ${
                                   animStyle === s.id
-                                    ? 'border-[#3777FF]/40 bg-[#3777FF]/5 text-slate-900'
-                                    : 'border-slate-200 text-slate-500 hover:text-slate-700'
+                                    ? 'border-accent/45 bg-accent/12 text-dark'
+                                    : 'border-primary/20 text-muted hover:text-primary'
                                 }`}
                               >
                                 {s.label}
@@ -921,10 +921,10 @@ export default function App() {
                         {/* Speed */}
                         <div className="p-4">
                           <div className="flex items-center justify-between mb-2">
-                            <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            <label className="flex items-center gap-2 text-xs font-semibold text-muted uppercase tracking-wider">
                               <Gauge className="w-3.5 h-3.5" /> Speed
                             </label>
-                            <span className="text-xs font-mono text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">{animSpeed}×</span>
+                            <span className="text-xs font-mono text-primary/85 bg-bg/72 px-2 py-0.5 rounded border border-primary/20">{animSpeed}×</span>
                           </div>
                           <input
                             type="range"
@@ -935,7 +935,7 @@ export default function App() {
                             onChange={(e) => { setAnimSpeed(Number(e.target.value)); setAnimKey(k => k + 1); }}
                             className="w-full"
                           />
-                          <div className="mt-1 flex justify-between text-xs text-slate-500">
+                          <div className="mt-1 flex justify-between text-xs text-muted">
                             <span>Slow</span>
                             <span>Fast</span>
                           </div>
@@ -945,10 +945,10 @@ export default function App() {
                         {uploadedImageRef.current && !isFillMode && (
                           <div className="p-4">
                             <div className="flex items-center justify-between mb-2">
-                              <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                              <label className="flex items-center gap-2 text-xs font-semibold text-muted uppercase tracking-wider">
                                 <SlidersHorizontal className="w-3.5 h-3.5" /> Sensitivity
                               </label>
-                              <span className="text-xs font-mono text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">{sensitivity}</span>
+                              <span className="text-xs font-mono text-primary/85 bg-bg/72 px-2 py-0.5 rounded border border-primary/20">{sensitivity}</span>
                             </div>
                             <input
                               type="range"
@@ -962,7 +962,7 @@ export default function App() {
                               }}
                               className="w-full"
                             />
-                            <div className="mt-1 flex justify-between text-xs text-slate-500">
+                            <div className="mt-1 flex justify-between text-xs text-muted">
                               <span>Less ink</span>
                               <span>More ink</span>
                             </div>
@@ -1009,8 +1009,8 @@ export default function App() {
                       }}
                       className={`relative flex min-h-[300px] w-full flex-col items-center justify-center border-2 border-dashed rounded-md transition-colors duration-200 ${
                         dragActive
-                          ? 'border-[#3777FF] bg-[#3777FF]/5'
-                          : 'border-slate-300 bg-white hover:border-slate-400'
+                          ? 'border-accent bg-accent/10'
+                          : 'border-primary/30 bg-bg hover:border-primary/45'
                       } ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}
                     >
                       <input
@@ -1022,26 +1022,26 @@ export default function App() {
                       />
                       {isProcessing ? (
                         <Motion.div
-                          className="flex flex-col items-center text-[#3777FF]"
+                          className="flex flex-col items-center text-accent"
                           animate={{ scale: [1, 1.05, 1] }}
                           transition={{ repeat: Infinity, duration: 2 }}
                         >
                           <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                          <p className="font-semibold font-display text-slate-800">Digitizing...</p>
-                          <p className="mt-1 text-sm text-slate-500">Tracing your signature curves</p>
+                          <p className="font-semibold font-display text-dark/90">Digitizing...</p>
+                          <p className="mt-1 text-sm text-muted">Tracing your signature curves</p>
                         </Motion.div>
                       ) : (
-                        <div className="pointer-events-none flex flex-col items-center text-slate-500">
+                        <div className="pointer-events-none flex flex-col items-center text-muted">
                           <Motion.div
-                            className="mb-5 border border-slate-300 bg-slate-50 p-4"
+                            className="mb-5 border border-primary/30 bg-bg/72 p-4"
                             whileHover={{ y: -2 }}
                             transition={{ type: 'spring', stiffness: 400 }}
                           >
-                            <Upload className="w-8 h-8 text-[#3777FF]" />
+                            <Upload className="w-8 h-8 text-accent" />
                           </Motion.div>
-                          <p className="text-lg font-semibold font-display text-slate-700">Drop your signature here</p>
-                          <p className="mt-1.5 text-sm text-slate-500">PNG, JPG, SVG or GIF</p>
-                          <p className="mt-4 text-xs uppercase tracking-[0.18em] text-slate-400">or browse files</p>
+                          <p className="text-lg font-semibold font-display text-primary">Drop your signature here</p>
+                          <p className="mt-1.5 text-sm text-muted">PNG, JPG, SVG or GIF</p>
+                          <p className="mt-4 text-xs uppercase tracking-[0.18em] text-muted/75">or browse files</p>
                         </div>
                       )}
                     </Motion.form>
@@ -1054,7 +1054,7 @@ export default function App() {
                       transition={{ duration: 0.25 }}
                       className="flex flex-col items-center w-full"
                     >
-                      <div className="relative w-full overflow-hidden rounded-md border border-slate-300 bg-white touch-none ruled-lines">
+                      <div className="relative w-full overflow-hidden rounded-md border border-primary/30 bg-bg touch-none ruled-lines">
                         <canvas
                           ref={canvasRef}
                           width={CANVAS_W}
@@ -1071,7 +1071,7 @@ export default function App() {
                               exit={{ opacity: 0 }}
                               className="absolute inset-0 flex items-center justify-center pointer-events-none"
                             >
-                              <span className="text-slate-300/80 font-display italic text-xl tracking-wide">Sign here</span>
+                              <span className="text-primary/35 font-display italic text-xl tracking-wide">Sign here</span>
                             </Motion.div>
                           )}
                         </AnimatePresence>
@@ -1126,10 +1126,10 @@ export default function App() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="w-full border-t border-slate-200 px-6 py-5">
+      <footer className="w-full border-t border-primary/20 px-6 py-5">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <p className="text-xs text-slate-500">Signature Animator</p>
-          <p className="text-xs text-slate-400">Built with care</p>
+          <p className="text-xs text-muted">Signature Animator</p>
+          <p className="text-xs text-muted/75">Built with care</p>
         </div>
       </footer>
 

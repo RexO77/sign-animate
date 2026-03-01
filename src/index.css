@@ -7,18 +7,18 @@
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
 
-  --color-primary: #2E4036;
-  --color-accent: #CC5833;
-  --color-bg: #F2F0E9;
-  --color-dark: #1A1A1A;
-  --color-surface: #E8E5DC;
-  --color-muted: #7A7A6E;
+  --color-primary: #2b211b;
+  --color-accent: #c43700;
+  --color-bg: #fff8f2;
+  --color-dark: #161311;
+  --color-surface: #fff2e6;
+  --color-muted: #6e625b;
 
-  --color-brand-peach: #FFBE86;
-  --color-brand-yellow: #FFE156;
-  --color-brand-cream: #FFE9CE;
-  --color-brand-pink: #FFB5C2;
-  --color-brand-blue: #3777FF;
+  --color-brand-peach: #fff8f2;
+  --color-brand-yellow: #fff2e6;
+  --color-brand-cream: #fff8f2;
+  --color-brand-pink: #2b211b;
+  --color-brand-blue: #c43700;
 }
 
 @keyframes marquee {
@@ -135,8 +135,8 @@
 .hero-grid {
   opacity: 0.18;
   background-image:
-    linear-gradient(rgba(242, 240, 233, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(242, 240, 233, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(255, 248, 242, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 248, 242, 0.12) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 1), transparent 74%);
   animation: heroGridShift 26s ease-in-out infinite;
@@ -154,7 +154,7 @@
   right: -8rem;
   width: 29rem;
   height: 29rem;
-  background: radial-gradient(circle, rgba(245, 213, 122, 0.38) 0%, rgba(245, 213, 122, 0) 70%);
+  background: radial-gradient(circle, rgba(196, 55, 0, 0.34) 0%, rgba(196, 55, 0, 0) 70%);
   animation: heroOrbFloat 18s ease-in-out infinite;
 }
 
@@ -163,7 +163,7 @@
   left: -9rem;
   width: 34rem;
   height: 34rem;
-  background: radial-gradient(circle, rgba(204, 88, 51, 0.36) 0%, rgba(204, 88, 51, 0) 72%);
+  background: radial-gradient(circle, rgba(43, 33, 27, 0.24) 0%, rgba(43, 33, 27, 0) 72%);
   animation: heroOrbWander 24s ease-in-out infinite;
 }
 
@@ -172,7 +172,7 @@
   left: 54%;
   width: 22rem;
   height: 22rem;
-  background: radial-gradient(circle, rgba(62, 95, 134, 0.28) 0%, rgba(62, 95, 134, 0) 72%);
+  background: radial-gradient(circle, rgba(255, 242, 230, 0.2) 0%, rgba(255, 242, 230, 0) 72%);
   animation: heroOrbFloat 20s ease-in-out infinite reverse;
 }
 
@@ -235,7 +235,7 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-runnable-track {
   height: 3px;
   border-radius: 9999px;
-  background: #cbd5e1;
+  background: rgba(43, 33, 27, 0.24);
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -244,31 +244,31 @@ input[type="range"]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #3777FF;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.2);
+  background: #c43700;
+  border: 2px solid #fff8f2;
+  box-shadow: 0 0 0 1px rgba(196, 55, 0, 0.24);
   margin-top: -5.5px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 0 1px rgba(55, 119, 255, 0.35);
+  box-shadow: 0 0 0 1px rgba(196, 55, 0, 0.4);
 }
 
 input[type="range"]::-moz-range-track {
   height: 3px;
   border-radius: 9999px;
-  background: #cbd5e1;
+  background: rgba(43, 33, 27, 0.24);
 }
 
 input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #3777FF;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.2);
+  background: #c43700;
+  border: 2px solid #fff8f2;
+  box-shadow: 0 0 0 1px rgba(196, 55, 0, 0.24);
 }
 
 /* ─── Ruled lines for draw canvas ─────────────────────────────────────────── */
@@ -278,8 +278,8 @@ input[type="range"]::-moz-range-thumb {
       to bottom,
       transparent,
       transparent 35px,
-      rgba(148, 163, 184, 0.22) 35px,
-      rgba(148, 163, 184, 0.22) 36px
+      rgba(43, 33, 27, 0.22) 35px,
+      rgba(43, 33, 27, 0.22) 36px
     );
   background-position: 0 8px;
 }
@@ -296,7 +296,7 @@ input[type="range"]::-moz-range-thumb {
 .page-bg {
   background: linear-gradient(
     180deg,
-    #f8fafc 0%,
-    #f1f5f9 100%
+    #fff8f2 0%,
+    #fff2e6 100%
   );
 }

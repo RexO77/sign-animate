@@ -7,35 +7,92 @@
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    background: #fff8f2;
+    color: #161311;
   }
 }
 
-@keyframes marquee {
+@keyframes orbitSweep {
   0% {
-    transform: translateX(0);
+    stroke-dashoffset: 220;
   }
 
   100% {
-    transform: translateX(-50%);
+    stroke-dashoffset: 0;
   }
 }
 
-@keyframes blink {
+@keyframes signatureDraw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.5;
+  }
 
-  0%,
-  100% {
+  18% {
     opacity: 1;
   }
 
-  50% {
-    opacity: 0;
+  72%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
   }
 }
 
-.animate-marquee {
-  animation: marquee 30s linear infinite;
+@keyframes exampleStrokeDraw {
+  0% {
+    stroke-dashoffset: 280;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
-.animate-blink {
-  animation: blink 1s step-end infinite;
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.hero-orbit-line {
+  stroke-dasharray: 6 8;
+  animation: orbitSweep 10s linear infinite;
+}
+
+.hero-tilt-card {
+  transform: perspective(1100px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 220ms ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.signature-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: signatureDraw 3.6s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+
+.example-stroke {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw 2.6s ease-in-out infinite alternate;
+}
+
+@media (hover: none) {
+  .hero-tilt-card {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit-line,
+  .signature-draw,
+  .example-stroke {
+    animation: none !important;
+  }
+
+  .hero-tilt-card {
+    transition: none;
+    transform: none !important;
+  }
 }
