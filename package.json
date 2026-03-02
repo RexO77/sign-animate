@@ -4,8 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "npm run dev --prefix signanimate-landing",
+    "dev:landing": "npm run dev --prefix signanimate-landing",
+    "dev:editor": "vite",
+    "build": "npm run build --prefix signanimate-landing",
+    "build:editor": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
