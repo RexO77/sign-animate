@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300..700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@1,400;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -394,9 +395,6 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ─── Landing page: hero scaffold ─────────────────────────────────────────── */
-.hero-scaffold {
-  /* Removed detailed grid lines */
-}
 
 /* ─── Landing page: hero panel & fade ─────────────────────────────────────── */
 .hero-panel {
@@ -536,9 +534,6 @@ input[type="range"]::-moz-range-thumb {
 
 /* ─── Landing page: mobile overrides ──────────────────────────────────────── */
 @media (max-width: 768px) {
-  .hero-scaffold {
-    /* Removed */
-  }
 
   .hero-mesh-bg {
     filter: blur(60px);
