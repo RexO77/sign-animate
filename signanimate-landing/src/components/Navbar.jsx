@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { NAV_LINKS } from '../constants';
+import { useHaptics } from '../hooks/useHaptics';
 
 const Navbar = ({ scrolled, onTryForFree }) => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { haptic } = useHaptics();
 
     return (
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-6xl">
             <nav
                 className={`rounded-full px-6 py-4 flex items-center justify-between transition-all duration-300 ${scrolled
-                        ? 'bg-dark/75 border border-bg/15 shadow-xl backdrop-blur-xl'
-                        : 'bg-dark/35 border border-bg/10 backdrop-blur-md'
+                    ? 'bg-dark/75 border border-bg/15 shadow-xl backdrop-blur-xl'
+                    : 'bg-dark/35 border border-bg/10 backdrop-blur-md'
                     }`}
             >
                 <a href="#top" className="flex items-center gap-2 group">
@@ -31,14 +33,14 @@ const Navbar = ({ scrolled, onTryForFree }) => {
                 <div className="hidden md:flex">
                     <button
                         type="button"
-                        onClick={onTryForFree}
+                        onClick={() => { haptic('cta'); onTryForFree(); }}
                         className="min-h-[44px] bg-accent text-bg px-6 py-2.5 rounded-full font-sans font-semibold text-sm hover:brightness-105 transition-all"
                     >
                         Open Editor
                     </button>
                 </div>
 
-                <button type="button" onClick={() => setMenuOpen((prev) => !prev)} className="md:hidden text-bg">
+                <button type="button" onClick={() => { haptic('toggle'); setMenuOpen((prev) => !prev); }} className="md:hidden text-bg">
                     {menuOpen ? <X /> : <Menu />}
                 </button>
             </nav>
@@ -49,7 +51,7 @@ const Navbar = ({ scrolled, onTryForFree }) => {
                         <a
                             key={link.label}
                             href={link.href}
-                            onClick={() => setMenuOpen(false)}
+                            onClick={() => { haptic('nav'); setMenuOpen(false); }}
                             className="font-sans text-sm font-semibold text-bg/85 hover:text-bg transition-colors"
                         >
                             {link.label}
@@ -58,6 +60,7 @@ const Navbar = ({ scrolled, onTryForFree }) => {
                     <button
                         type="button"
                         onClick={() => {
+                            haptic('cta');
                             setMenuOpen(false);
                             onTryForFree();
                         }}

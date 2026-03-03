@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, X, Check, Copy, ChevronDown, ChevronUp, PenTool, Code, FileImage } from 'lucide-react';
 import { orderPaths, computeTiming, getPathBBox } from './pathOrder';
+import { useHaptics } from './useHaptics';
 
 // ─── MATH & DRAWING HELPERS ───────────────────────────────────────────────────
 const CANVAS_W = 600;
@@ -128,8 +129,19 @@ const ANIMATION_STYLES = [
   { id: 'classic', label: 'Classic' },
 ];
 
+// ─── HAPTIC PRESET MAP PER BUTTON VARIANT ─────────────────────────────────────
+const VARIANT_HAPTIC = {
+  default: 'primary',
+  ghost: 'click',
+  outline: 'click',
+  danger: 'danger',
+  primary: 'primary',
+  export: 'export',
+};
+
 // ─── BUTTON COMPONENT ─────────────────────────────────────────────────────────
-const Button = ({ children, variant = 'default', className = '', ...props }) => {
+const Button = ({ children, variant = 'default', className = '', onClick, ...props }) => {
+  const { haptic } = useHaptics();
   const base = 'inline-flex items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:opacity-45 disabled:pointer-events-none';
   const variants = {
     default: 'bg-accent text-bg hover:brightness-105',
@@ -139,11 +151,16 @@ const Button = ({ children, variant = 'default', className = '', ...props }) => 
     primary: 'bg-accent text-bg hover:brightness-105',
     export: 'bg-dark text-bg hover:bg-dark/90',
   };
+  const handleClick = (e) => {
+    haptic(VARIANT_HAPTIC[variant] || 'click');
+    onClick?.(e);
+  };
   return (
     <Motion.button
       whileHover={{ y: -1 }}
       whileTap={{ y: 0 }}
       className={`${base} ${variants[variant]} ${className}`}
+      onClick={handleClick}
       {...props}
     >
       {children}
@@ -293,6 +310,7 @@ function ExportModal({ snippet, staticSVG, onClose }) {
   const [copied, setCopied] = useState(false);
   const [activeExportTab, setActiveExportTab] = useState('code');
   const textareaRef = useRef(null);
+  const { haptic } = useHaptics();
 
   const handleCopy = async () => {
     try {
@@ -346,12 +364,11 @@ function ExportModal({ snippet, staticSVG, onClose }) {
               <Motion.button
                 key={tab.id}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => setActiveExportTab(tab.id)}
-                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-semibold transition-colors ${
-                  activeExportTab === tab.id
+                onClick={() => { haptic('tab'); setActiveExportTab(tab.id); }}
+                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-semibold transition-colors ${activeExportTab === tab.id
                     ? 'border border-primary/30 bg-bg text-dark'
                     : 'text-muted hover:text-primary'
-                }`}
+                  }`}
               >
                 <tab.Icon className="w-4 h-4" /> {tab.label}
               </Motion.button>
@@ -565,6 +582,7 @@ const Signature = ({ paths, isFill, viewBox, className, clusterMeta, animStyle, 
 
 // ─── MAIN APP COMPONENT ───────────────────────────────────────────────────────
 export default function App() {
+  const { haptic } = useHaptics();
   const [activeTab, setActiveTab] = useState('upload');
   const [animatedPaths, setAnimatedPaths] = useState([]);
   const [clusterMeta, setClusterMeta] = useState([]);
@@ -740,6 +758,7 @@ export default function App() {
 
   const animateDrawing = () => {
     if (!finishedStrokes.length) return;
+    haptic('primary');
     const paths = finishedStrokes.map(s => strokeToSVGPath(s));
     const { orderedPaths: sorted, clusterMeta: meta } = orderPaths(paths);
     setIsFillMode(true);
@@ -749,6 +768,7 @@ export default function App() {
   };
 
   const handleReset = () => {
+    haptic('reset');
     setAnimatedPaths([]);
     setClusterMeta([]);
     setSvgTransform('');
@@ -817,13 +837,12 @@ export default function App() {
                   ].map(tab => (
                     <Motion.button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => { haptic('tab'); setActiveTab(tab.id); }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-2 rounded px-6 py-2.5 text-sm font-semibold transition-colors ${
-                        activeTab === tab.id
+                      className={`flex items-center gap-2 rounded px-6 py-2.5 text-sm font-semibold transition-colors ${activeTab === tab.id
                           ? 'border border-primary/30 bg-bg/72 text-dark'
                           : 'text-muted hover:text-primary'
-                      }`}
+                        }`}
                     >
                       <tab.Icon className="w-4 h-4" /> {tab.label}
                     </Motion.button>
@@ -905,12 +924,11 @@ export default function App() {
                               <Motion.button
                                 key={s.id}
                                 whileTap={{ scale: 0.98 }}
-                                onClick={() => { setAnimStyle(s.id); setAnimKey(k => k + 1); }}
-                                className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2.5 text-sm font-semibold transition-colors ${
-                                  animStyle === s.id
+                                onClick={() => { haptic('tab'); setAnimStyle(s.id); setAnimKey(k => k + 1); }}
+                                className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2.5 text-sm font-semibold transition-colors ${animStyle === s.id
                                     ? 'border-accent/45 bg-accent/12 text-dark'
                                     : 'border-primary/20 text-muted hover:text-primary'
-                                }`}
+                                  }`}
                               >
                                 {s.label}
                               </Motion.button>
@@ -1007,11 +1025,10 @@ export default function App() {
                         e.preventDefault(); e.stopPropagation(); setDragActive(false);
                         if (e.dataTransfer.files[0]) processUpload(e.dataTransfer.files[0]);
                       }}
-                      className={`relative flex min-h-[300px] w-full flex-col items-center justify-center border-2 border-dashed rounded-md transition-colors duration-200 ${
-                        dragActive
+                      className={`relative flex min-h-[300px] w-full flex-col items-center justify-center border-2 border-dashed rounded-md transition-colors duration-200 ${dragActive
                           ? 'border-accent bg-accent/10'
                           : 'border-primary/30 bg-bg hover:border-primary/45'
-                      } ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}
+                        } ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}
                     >
                       <input
                         type="file"

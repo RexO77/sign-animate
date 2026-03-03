@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { HERO_FORMATS } from '../constants';
+import { useHaptics } from '../hooks/useHaptics';
 
 const Hero = ({ onTryForFree }) => {
     const heroRef = useRef(null);
     const previewRef = useRef(null);
     const [activeFormat, setActiveFormat] = useState(0);
+    const { haptic } = useHaptics();
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -88,14 +90,14 @@ const Hero = ({ onTryForFree }) => {
                     <div className="hero-reveal flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
                         <button
                             type="button"
-                            onClick={onTryForFree}
+                            onClick={() => { haptic('cta'); onTryForFree(); }}
                             className="min-h-[48px] bg-accent text-bg px-8 py-3 rounded-full font-sans font-semibold text-base hover:brightness-105 transition-all inline-flex items-center gap-2"
                         >
                             Open Editor <ArrowRight size={16} />
                         </button>
                         <button
                             type="button"
-                            onClick={scrollToShowcase}
+                            onClick={() => { haptic('secondary'); scrollToShowcase(); }}
                             className="min-h-[48px] rounded-full border border-bg/40 bg-bg/8 px-6 py-3 text-bg font-sans font-semibold hover:bg-bg/15 transition-colors"
                         >
                             View Showcase
@@ -144,10 +146,10 @@ const Hero = ({ onTryForFree }) => {
                                 <button
                                     type="button"
                                     key={format.label}
-                                    onMouseEnter={() => setActiveFormat(index)}
+                                    onMouseEnter={() => { haptic('card'); setActiveFormat(index); }}
                                     className={`rounded-xl border px-3 py-2 text-left transition-all ${index === activeFormat
-                                            ? 'border-accent/50 bg-accent/14'
-                                            : 'border-bg/10 bg-bg/4 hover:border-bg/20'
+                                        ? 'border-accent/50 bg-accent/14'
+                                        : 'border-bg/10 bg-bg/4 hover:border-bg/20'
                                         }`}
                                 >
                                     <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-bg/90">{format.label}</p>
@@ -167,7 +169,7 @@ const Hero = ({ onTryForFree }) => {
                             <span className="font-sans text-sm text-bg/70">Export GIF, MP4, SVG, and embed code in one pass.</span>
                             <button
                                 type="button"
-                                onClick={onTryForFree}
+                                onClick={() => { haptic('cta'); onTryForFree(); }}
                                 className="min-h-[44px] shrink-0 rounded-full bg-bg text-dark px-4 py-2 font-sans text-sm font-semibold hover:bg-bg/90 transition-colors inline-flex items-center gap-1"
                             >
                                 Open <ArrowRight size={14} />
