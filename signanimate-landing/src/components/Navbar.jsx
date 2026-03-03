@@ -8,51 +8,48 @@ const Navbar = ({ scrolled, onTryForFree }) => {
     const { haptic } = useHaptics();
 
     return (
-        <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-6xl">
+        <header className={`fixed left-0 right-0 z-50 flex justify-center transition-all duration-300 ${scrolled ? 'top-4 md:top-6' : 'top-6 md:top-8'}`}>
             <nav
-                className={`rounded-full px-6 py-4 flex items-center justify-between transition-all duration-300 ${scrolled
-                    ? 'bg-dark/75 border border-bg/15 shadow-xl backdrop-blur-xl'
-                    : 'bg-dark/35 border border-bg/10 backdrop-blur-md'
+                className={`flex items-center justify-between w-[92%] max-w-4xl px-5 md:px-6 py-3.5 transition-all duration-300 rounded-full border shadow-sm ${scrolled
+                    ? 'bg-surface/75 backdrop-blur-xl border-primary/10 shadow-[0_4px_16px_rgba(0,0,0,0.04)]'
+                    : 'bg-surface/40 backdrop-blur-md border-primary/5 shadow-transparent'
                     }`}
             >
-                <a href="#top" className="flex items-center gap-2 group">
-                    <span className="font-sans font-bold tracking-tight text-xl text-bg">SignAnimate</span>
-                    <svg viewBox="0 0 100 20" className="w-12 h-3 overflow-visible">
-                        <path d="M5,15 Q30,5 50,15 T95,5" fill="none" className="stroke-2 stroke-accent" />
-                    </svg>
+                <a href="#top" className="flex items-center gap-2 group shrink-0">
+                    <span className="font-sans font-bold tracking-tight text-lg text-primary">SignAnimate</span>
                 </a>
 
-                <div className="hidden md:flex items-center gap-8">
+                <div className="hidden md:flex flex-1 items-center justify-center gap-8 border-l border-r border-primary/10 mx-6 px-6 h-6">
                     {NAV_LINKS.map((link) => (
-                        <a key={link.label} href={link.href} className="font-sans text-sm font-semibold text-bg/80 hover:text-bg transition-colors">
+                        <a key={link.label} href={link.href} className="font-sans text-xs font-semibold uppercase tracking-widest text-primary/60 hover:text-primary transition-colors">
                             {link.label}
                         </a>
                     ))}
                 </div>
 
-                <div className="hidden md:flex">
+                <div className="hidden md:flex shrink-0">
                     <button
                         type="button"
                         onClick={() => { haptic('cta'); onTryForFree(); }}
-                        className="min-h-[44px] bg-accent text-bg px-6 py-2.5 rounded-full font-sans font-semibold text-sm hover:brightness-105 transition-all"
+                        className="min-h-[36px] bg-primary text-surface px-5 py-1.5 rounded-full font-sans font-semibold text-xs transition-all hover:bg-primary/90 flex items-center justify-center"
                     >
-                        Open Editor
+                        Editor
                     </button>
                 </div>
 
-                <button type="button" onClick={() => { haptic('toggle'); setMenuOpen((prev) => !prev); }} className="md:hidden text-bg">
-                    {menuOpen ? <X /> : <Menu />}
+                <button type="button" onClick={() => { haptic('toggle'); setMenuOpen((prev) => !prev); }} className="md:hidden text-primary shrink-0 ml-auto">
+                    {menuOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
             </nav>
 
             {menuOpen && (
-                <div className="md:hidden mt-3 rounded-2xl border border-bg/12 bg-dark/85 backdrop-blur-xl p-4 flex flex-col gap-3">
+                <div className="md:hidden absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] bg-surface/95 backdrop-blur-xl border border-primary/10 rounded-3xl p-6 flex flex-col gap-5 shadow-lg">
                     {NAV_LINKS.map((link) => (
                         <a
                             key={link.label}
                             href={link.href}
                             onClick={() => { haptic('nav'); setMenuOpen(false); }}
-                            className="font-sans text-sm font-semibold text-bg/85 hover:text-bg transition-colors"
+                            className="font-sans text-base font-semibold text-primary/80 hover:text-primary transition-colors text-center"
                         >
                             {link.label}
                         </a>
@@ -64,7 +61,7 @@ const Navbar = ({ scrolled, onTryForFree }) => {
                             setMenuOpen(false);
                             onTryForFree();
                         }}
-                        className="mt-2 min-h-[44px] bg-accent text-bg rounded-full font-sans font-semibold text-sm"
+                        className="mt-2 min-h-[44px] bg-primary text-surface rounded-full font-sans font-semibold text-sm hover:bg-primary/90 w-full"
                     >
                         Open Editor
                     </button>

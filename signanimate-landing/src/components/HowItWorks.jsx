@@ -2,19 +2,20 @@ import React from 'react';
 import { PROCESS_STEPS } from '../constants';
 
 const HowItWorks = () => (
-    <section id="how-it-works" className="section-shell relative w-full border-t border-dotted border-primary/25 bg-bg py-20 md:py-24 px-6 md:px-14">
-        <div className="max-w-6xl mx-auto">
-            <div className="max-w-2xl mb-12 md:mb-14">
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary/60 mb-4">How it works</p>
-                <h2 className="font-sans font-bold text-dark text-3xl md:text-5xl tracking-tight leading-tight">A clean workflow for hand-drawn signatures.</h2>
+    <section id="how-it-works" className="relative w-full bg-surface py-24 md:py-32 px-6 md:px-14">
+        <div className="section-edge-gradient-alt" />
+        <div className="max-w-6xl mx-auto relative z-10">
+            <div className="max-w-2xl mb-14 md:mb-16">
+                <p className="font-sans font-semibold text-sm tracking-wide text-primary/60 mb-4 uppercase">How it works</p>
+                <h2 className="font-serif text-primary text-[2.5rem] md:text-[3.5rem] leading-[1.05] tracking-tight">A clean workflow for hand-drawn signatures.</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                 {PROCESS_STEPS.map((step, index) => (
-                    <article key={step.title} className="rounded-[1.6rem] border border-primary/16 bg-bg/78 p-7 md:p-8 shadow-sm">
-                        <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent mb-4">0{index + 1}</p>
-                        <h3 className="font-sans font-semibold text-dark text-2xl leading-tight mb-4">{step.title}</h3>
-                        <p className="font-sans text-muted text-base leading-relaxed">{step.body}</p>
+                    <article key={step.title} className="flex flex-col">
+                        <p className="font-sans font-semibold text-sm tracking-wide text-accent mb-5 bg-accent/10 w-fit px-3 py-1 rounded-full">{String(index + 1).padStart(2, '0')}</p>
+                        <h3 className="font-sans font-bold text-primary text-2xl leading-tight mb-3">{step.title}</h3>
+                        <p className="font-sans text-primary/70 text-base leading-relaxed">{step.body}</p>
                     </article>
                 ))}
             </div>

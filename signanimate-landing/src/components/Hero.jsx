@@ -1,35 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
-import { HERO_FORMATS } from '../constants';
 import { useHaptics } from '../hooks/useHaptics';
 
 const Hero = ({ onTryForFree }) => {
     const heroRef = useRef(null);
-    const previewRef = useRef(null);
-    const [activeFormat, setActiveFormat] = useState(0);
     const { haptic } = useHaptics();
 
     useEffect(() => {
         const ctx = gsap.context(() => {
             gsap.from('.hero-reveal', {
-                y: 30,
+                y: 20,
                 opacity: 0,
-                duration: 0.9,
-                stagger: 0.11,
+                duration: 1,
+                stagger: 0.15,
                 ease: 'power3.out',
+                delay: 0.1,
             });
         }, heroRef);
 
         return () => ctx.revert();
-    }, []);
-
-    useEffect(() => {
-        const rotation = window.setInterval(() => {
-            setActiveFormat((current) => (current + 1) % HERO_FORMATS.length);
-        }, 2200);
-
-        return () => window.clearInterval(rotation);
     }, []);
 
     const scrollToShowcase = () => {
@@ -39,145 +29,47 @@ const Hero = ({ onTryForFree }) => {
         }
     };
 
-    const handlePreviewMove = (event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        const px = (event.clientX - rect.left) / rect.width;
-        const py = (event.clientY - rect.top) / rect.height;
-        const rotateY = (px - 0.5) * 8;
-        const rotateX = (0.5 - py) * 8;
-        if (previewRef.current) {
-            previewRef.current.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`);
-            previewRef.current.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`);
-        }
-    };
-
-    const handlePreviewLeave = () => {
-        if (previewRef.current) {
-            previewRef.current.style.setProperty('--tilt-x', '0deg');
-            previewRef.current.style.setProperty('--tilt-y', '0deg');
-        }
-    };
-
     return (
         <section
             id="top"
             ref={heroRef}
-            className="section-shell section-shell-dark relative min-h-[100dvh] w-full overflow-hidden pt-28 md:pt-32 pb-16 md:pb-20 px-6 md:px-14"
+            className="relative min-h-[90dvh] w-full pt-40 md:pt-48 pb-24 px-6 md:px-14 flex flex-col items-center overflow-hidden"
         >
-            <div className="hero-scaffold absolute inset-0 z-0" />
+            {/* The vibrant mesh gradient behind the logo area */}
+            <div className="hero-mesh-bg" />
 
-            {/* Gradient bridge for smooth dark→light transition */}
-            <div className="hero-fade-bridge" />
+            <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
+                <h1 className="hero-reveal font-serif text-primary text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] leading-[0.95] tracking-tight whitespace-pre-wrap">
+                    SignAnimate<span className="align-super text-[0.4em]">©</span> is a custom{'\n'}
+                    tool specializing in:
+                </h1>
 
-            <div className="relative z-10 max-w-6xl mx-auto min-h-[74vh] grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-10 lg:gap-14 items-center">
-                {/* Left panel — headline, description, buttons */}
-                <div className="hero-panel flex flex-col gap-7">
-                    <h1 className="flex flex-col gap-3">
-                        <span className="hero-reveal font-sans font-extrabold text-bg text-5xl sm:text-6xl md:text-7xl leading-[0.94] tracking-tight">
-                            Signature animation
-                            <br />
-                            with precision.
-                        </span>
-                        <span className="hero-reveal font-serif italic text-accent text-[2.25rem] sm:text-5xl md:text-6xl leading-[0.95]">
-                            Fast, clean, and free.
-                        </span>
-                    </h1>
-
-                    <p className="hero-reveal max-w-xl font-sans text-lg md:text-xl leading-relaxed text-bg/70">
-                        Draw or upload a signature, tune the motion, and export polished GIF, MP4, SVG, or embed code.
-                    </p>
-
-                    <div className="hero-reveal flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
-                        <button
-                            type="button"
-                            onClick={() => { haptic('cta'); onTryForFree(); }}
-                            className="min-h-[48px] bg-accent text-bg px-8 py-3 rounded-full font-sans font-semibold text-base hover:brightness-105 transition-all inline-flex items-center gap-2"
-                        >
-                            Open Editor <ArrowRight size={16} />
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => { haptic('secondary'); scrollToShowcase(); }}
-                            className="min-h-[48px] rounded-full border border-bg/40 bg-bg/8 px-6 py-3 text-bg font-sans font-semibold hover:bg-bg/15 transition-colors"
-                        >
-                            View Showcase
-                        </button>
-                    </div>
+                <div className="hero-reveal mt-10 md:mt-12 flex flex-wrap justify-center gap-3 sm:gap-4 max-w-2xl px-4">
+                    <span className="pill-tag pill-tag-magenta">GIFs</span>
+                    <span className="pill-tag pill-tag-blue">SVG Vectors</span>
+                    <span className="pill-tag pill-tag-orange">MP4 Output</span>
+                    <span className="pill-tag pill-tag-yellow">Embed Code</span>
                 </div>
 
-                {/* Right panel — preview card */}
-                <div className="hero-reveal hero-panel relative self-center">
-                    <svg viewBox="0 0 620 280" className="absolute -top-12 -left-8 w-[130%] max-w-none opacity-28 pointer-events-none">
-                        <path d="M24,206 C154,24 280,308 430,106 C506,6 584,116 614,58" fill="none" className="hero-orbit-line stroke-accent/50" strokeWidth="1.4" />
-                        <path d="M20,232 C132,146 248,90 380,160 C484,216 558,124 612,144" fill="none" className="hero-orbit-line stroke-bg/45" strokeWidth="1" />
-                    </svg>
-
-                    <div
-                        ref={previewRef}
-                        className="hero-tilt-card relative rounded-[2rem] border border-bg/12 bg-dark/80 backdrop-blur-sm p-6 md:p-7"
-                        onMouseMove={handlePreviewMove}
-                        onMouseLeave={handlePreviewLeave}
-                        style={{ '--tilt-x': '0deg', '--tilt-y': '0deg' }}
+                <div className="hero-reveal mt-20 flex w-full max-w-[280px] sm:max-w-none flex-col sm:flex-row items-center justify-center gap-4">
+                    <button
+                        type="button"
+                        onClick={() => { haptic('cta'); onTryForFree(); }}
+                        className="w-full sm:w-auto min-h-[50px] bg-primary text-surface px-8 py-3 rounded-full font-sans font-semibold text-[15px] hover:bg-primary/90 transition-all shadow-[0_8px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.18)] flex items-center justify-center gap-2"
                     >
-                        <div className="flex items-center justify-between gap-3 mb-5">
-                            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bg/80">Live stroke engine</p>
-                            <span className="rounded-full border border-bg/20 bg-bg/8 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-bg/80">
-                                8ms preview
-                            </span>
-                        </div>
+                        Open Editor
+                    </button>
 
-                        <div className="rounded-2xl border border-bg/10 bg-dark/50 p-4 md:p-5">
-                            <svg viewBox="0 0 560 170" className="w-full overflow-visible">
-                                <path
-                                    className="signature-draw"
-                                    d="M20,108 C96,38 168,138 226,86 C286,34 352,112 414,70 C454,44 508,68 544,54"
-                                    fill="none"
-                                    stroke="#FFF8F2"
-                                    strokeWidth="6"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    pathLength="1"
-                                />
-                            </svg>
-                        </div>
-
-                        <div className="mt-5 grid grid-cols-2 gap-2">
-                            {HERO_FORMATS.map((format, index) => (
-                                <button
-                                    type="button"
-                                    key={format.label}
-                                    onMouseEnter={() => { haptic('card'); setActiveFormat(index); }}
-                                    className={`rounded-xl border px-3 py-2 text-left transition-all ${index === activeFormat
-                                        ? 'border-accent/50 bg-accent/14'
-                                        : 'border-bg/10 bg-bg/4 hover:border-bg/20'
-                                        }`}
-                                >
-                                    <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-bg/90">{format.label}</p>
-                                    <p className="font-sans text-xs text-bg/65 mt-1">{format.detail}</p>
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="mt-4 h-1 rounded-full bg-bg/8 overflow-hidden">
-                            <span
-                                className="block h-full rounded-full bg-accent transition-all duration-500"
-                                style={{ width: `${((activeFormat + 1) / HERO_FORMATS.length) * 100}%` }}
-                            />
-                        </div>
-
-                        <div className="mt-5 pt-4 border-t border-bg/10 flex items-center justify-between gap-3">
-                            <span className="font-sans text-sm text-bg/70">Export GIF, MP4, SVG, and embed code in one pass.</span>
-                            <button
-                                type="button"
-                                onClick={() => { haptic('cta'); onTryForFree(); }}
-                                className="min-h-[44px] shrink-0 rounded-full bg-bg text-dark px-4 py-2 font-sans text-sm font-semibold hover:bg-bg/90 transition-colors inline-flex items-center gap-1"
-                            >
-                                Open <ArrowRight size={14} />
-                            </button>
-                        </div>
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => { haptic('secondary'); scrollToShowcase(); }}
+                        className="w-full sm:w-auto min-h-[50px] bg-surface text-primary border border-primary/10 px-8 py-3 rounded-full font-sans font-semibold text-[15px] hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+                    >
+                        View Showcase <ArrowUpRight size={16} />
+                    </button>
                 </div>
             </div>
+
         </section>
     );
 };

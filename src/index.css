@@ -7,18 +7,18 @@
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
 
-  --color-primary: #2b211b;
-  --color-accent: #c43700;
-  --color-bg: #fff8f2;
-  --color-dark: #161311;
-  --color-surface: #fff2e6;
-  --color-muted: #6e625b;
+  --color-primary: #111111;
+  --color-accent: #ff481b;
+  --color-bg: #fcfcfc;
+  --color-dark: #0a0a0a;
+  --color-surface: #ffffff;
+  --color-muted: #888888;
 
-  --color-brand-peach: #fff8f2;
-  --color-brand-yellow: #fff2e6;
-  --color-brand-cream: #fff8f2;
-  --color-brand-pink: #2b211b;
-  --color-brand-blue: #c43700;
+  --color-brand-peach: #ffeff2;
+  --color-brand-yellow: #fff3db;
+  --color-brand-cream: #f4f6f8;
+  --color-brand-pink: #fbe5fe;
+  --color-brand-blue: #e3ebfa;
 }
 
 @keyframes marquee {
@@ -124,14 +124,80 @@
   }
 }
 
-@keyframes exampleStrokeDraw {
-  0% {
+/* ─── Varied Showcase Stroke Animations ───────────────────────────────────── */
+@keyframes exampleStrokeDraw1 {
+
+  0%,
+  15% {
     stroke-dashoffset: 280;
   }
 
+  85%,
   100% {
     stroke-dashoffset: 0;
   }
+}
+
+@keyframes exampleStrokeDraw2 {
+
+  0%,
+  10% {
+    stroke-dashoffset: 280;
+  }
+
+  90%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes exampleStrokeDraw3 {
+
+  0%,
+  25% {
+    stroke-dashoffset: 280;
+  }
+
+  75%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.example-stroke-1 {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw1 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
+}
+
+.example-stroke-2 {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw2 3.1s cubic-bezier(0.3, 0.8, 0.4, 1) infinite alternate;
+}
+
+.example-stroke-3 {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw3 2.5s cubic-bezier(0.2, 0.8, 0.3, 1) infinite alternate-reverse;
+}
+
+.example-stroke-4 {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw1 3.4s ease-in-out infinite alternate;
+}
+
+.example-stroke-5 {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw3 2.9s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+.example-stroke-6 {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: exampleStrokeDraw2 3.7s cubic-bezier(0.25, 0.8, 0.5, 1) infinite alternate-reverse;
 }
 
 .hero-grid {
@@ -196,12 +262,6 @@
   animation: signatureDraw 3.6s cubic-bezier(0.23, 1, 0.32, 1) infinite;
 }
 
-.example-stroke {
-  stroke-dasharray: 280;
-  stroke-dashoffset: 280;
-  animation: exampleStrokeDraw 2.6s ease-in-out infinite alternate;
-}
-
 @media (hover: none) {
   .hero-tilt-card {
     transform: none !important;
@@ -216,7 +276,12 @@
   .hero-orb-three,
   .hero-orbit-line,
   .signature-draw,
-  .example-stroke {
+  .example-stroke-1,
+  .example-stroke-2,
+  .example-stroke-3,
+  .example-stroke-4,
+  .example-stroke-5,
+  .example-stroke-6 {
     animation: none !important;
   }
 
@@ -256,7 +321,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 0 1px rgba(196, 55, 0, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 72, 27, 0.4);
 }
 
 input[type="range"]::-moz-range-track {
@@ -270,8 +335,8 @@ input[type="range"]::-moz-range-thumb {
   height: 14px;
   border-radius: 50%;
   background: #c43700;
-  border: 2px solid #fff8f2;
-  box-shadow: 0 0 0 1px rgba(196, 55, 0, 0.24);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 72, 27, 0.24);
 }
 
 /* ─── Ruled lines for draw canvas ─────────────────────────────────────────── */
@@ -280,8 +345,8 @@ input[type="range"]::-moz-range-thumb {
     repeating-linear-gradient(to bottom,
       transparent,
       transparent 35px,
-      rgba(43, 33, 27, 0.22) 35px,
-      rgba(43, 33, 27, 0.22) 36px);
+      rgba(17, 17, 17, 0.08) 35px,
+      rgba(17, 17, 17, 0.08) 36px);
   background-position: 0 8px;
 }
 
@@ -306,45 +371,6 @@ input[type="range"]::-moz-range-thumb {
   isolation: isolate;
 }
 
-.guide-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(to bottom,
-      rgba(43, 33, 27, 0.04) 0,
-      rgba(43, 33, 27, 0.04) 1px,
-      transparent 1px,
-      transparent 116px),
-    linear-gradient(to right,
-      transparent 24px,
-      rgba(43, 33, 27, 0.06) 24px,
-      rgba(43, 33, 27, 0.06) 25px,
-      transparent 25px),
-    linear-gradient(to right,
-      transparent 72px,
-      rgba(43, 33, 27, 0.06) 72px,
-      rgba(43, 33, 27, 0.06) 73px,
-      transparent 73px),
-    linear-gradient(to right,
-      transparent calc(50% - 0.5px),
-      rgba(43, 33, 27, 0.05) calc(50% - 0.5px),
-      rgba(43, 33, 27, 0.05) calc(50% + 0.5px),
-      transparent calc(50% + 0.5px)),
-    linear-gradient(to right,
-      transparent calc(100% - 72px),
-      rgba(43, 33, 27, 0.06) calc(100% - 72px),
-      rgba(43, 33, 27, 0.06) calc(100% - 71px),
-      transparent calc(100% - 71px)),
-    linear-gradient(to right,
-      transparent calc(100% - 24px),
-      rgba(43, 33, 27, 0.06) calc(100% - 24px),
-      rgba(43, 33, 27, 0.06) calc(100% - 23px),
-      transparent calc(100% - 23px));
-}
-
 /* ─── Landing page: section borders ───────────────────────────────────────── */
 .section-shell::before,
 .section-shell-dark::before {
@@ -364,38 +390,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .section-shell-dark::before {
-  border-color: rgba(255, 248, 242, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ─── Landing page: hero scaffold ─────────────────────────────────────────── */
 .hero-scaffold {
-  background-color: #161311;
-  background-image:
-    repeating-linear-gradient(to bottom,
-      rgba(255, 248, 242, 0.11) 0,
-      rgba(255, 248, 242, 0.11) 1px,
-      transparent 1px,
-      transparent 92px),
-    linear-gradient(to right,
-      transparent 24px,
-      rgba(255, 248, 242, 0.16) 24px,
-      rgba(255, 248, 242, 0.16) 25px,
-      transparent 25px),
-    linear-gradient(to right,
-      transparent 72px,
-      rgba(255, 248, 242, 0.16) 72px,
-      rgba(255, 248, 242, 0.16) 73px,
-      transparent 73px),
-    linear-gradient(to right,
-      transparent calc(100% - 72px),
-      rgba(255, 248, 242, 0.16) calc(100% - 72px),
-      rgba(255, 248, 242, 0.16) calc(100% - 71px),
-      transparent calc(100% - 71px)),
-    linear-gradient(to right,
-      transparent calc(100% - 24px),
-      rgba(255, 248, 242, 0.16) calc(100% - 24px),
-      rgba(255, 248, 242, 0.16) calc(100% - 23px),
-      transparent calc(100% - 23px));
+  /* Removed detailed grid lines */
 }
 
 /* ─── Landing page: hero panel & fade ─────────────────────────────────────── */
@@ -451,44 +451,97 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
+/* ─── Vibrant Top Gradient ─────────────────────────────────────────────────── */
+.hero-mesh-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80vh;
+  min-height: 480px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(228, 122, 219, 0.6) 0%, transparent 40%),
+    radial-gradient(circle at 40% 5%, rgba(246, 126, 99, 0.65) 0%, transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(247, 187, 142, 0.55) 0%, transparent 45%),
+    radial-gradient(circle at 50% 12%, rgba(251, 198, 186, 0.3) 0%, transparent 55%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  /* Add subtle white fade at bottom */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, transparent 95%);
+}
+
+.hero-mesh-dark-overlay {
+  display: none;
+}
+
+/* ─── Pill Tags ───────────────────────────────────────────────────────────── */
+.pill-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pill-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.pill-tag-magenta {
+  background-color: #fce2fe;
+}
+
+.pill-tag-blue {
+  background-color: #bee2fb;
+}
+
+.pill-tag-orange {
+  background-color: #fbbb66;
+}
+
+.pill-tag-yellow {
+  background-color: #feefca;
+}
+
+/* ─── Section Edge Gradients ──────────────────────────────────────────────── */
+.section-edge-gradient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(228, 122, 219, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 50%, rgba(246, 126, 99, 0.05) 0%, transparent 50%);
+}
+
+.section-edge-gradient-alt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(247, 187, 142, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 100% 50%, rgba(228, 122, 219, 0.04) 0%, transparent 60%);
+}
+
 /* ─── Landing page: mobile overrides ──────────────────────────────────────── */
 @media (max-width: 768px) {
-  .guide-shell::before {
-    background-image:
-      repeating-linear-gradient(to bottom,
-        rgba(43, 33, 27, 0.04) 0,
-        rgba(43, 33, 27, 0.04) 1px,
-        transparent 1px,
-        transparent 128px),
-      linear-gradient(to right,
-        transparent 20px,
-        rgba(43, 33, 27, 0.06) 20px,
-        rgba(43, 33, 27, 0.06) 21px,
-        transparent 21px),
-      linear-gradient(to right,
-        transparent calc(100% - 20px),
-        rgba(43, 33, 27, 0.06) calc(100% - 20px),
-        rgba(43, 33, 27, 0.06) calc(100% - 19px),
-        transparent calc(100% - 19px));
+  .hero-scaffold {
+    /* Removed */
   }
 
-  .hero-scaffold {
-    background-image:
-      repeating-linear-gradient(to bottom,
-        rgba(255, 248, 242, 0.11) 0,
-        rgba(255, 248, 242, 0.11) 1px,
-        transparent 1px,
-        transparent 104px),
-      linear-gradient(to right,
-        transparent 20px,
-        rgba(255, 248, 242, 0.16) 20px,
-        rgba(255, 248, 242, 0.16) 21px,
-        transparent 21px),
-      linear-gradient(to right,
-        transparent calc(100% - 20px),
-        rgba(255, 248, 242, 0.16) calc(100% - 20px),
-        rgba(255, 248, 242, 0.16) calc(100% - 19px),
-        transparent calc(100% - 19px));
+  .hero-mesh-bg {
+    filter: blur(60px);
   }
 
   .section-shell::before,
