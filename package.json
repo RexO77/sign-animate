@@ -8,7 +8,7 @@
     "dev": "npm run dev --prefix signanimate-landing",
     "dev:landing": "npm run dev --prefix signanimate-landing",
     "dev:editor": "vite",
-    "build": "npm run build --prefix signanimate-landing",
+    "build": "npm run build --prefix signanimate-landing && rm -rf dist && cp -r signanimate-landing/dist ./dist && vite build --outDir dist/editor",
     "build:editor": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
