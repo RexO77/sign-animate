@@ -18,6 +18,7 @@ export default {
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'serif'],
         mono: ['"IBM Plex Mono"', 'monospace'],
+        handwritten: ['"Handlee"', 'cursive'],
       },
     },
   },

@@ -39,9 +39,8 @@ const Hero = ({ onTryForFree }) => {
             <div className="hero-mesh-bg" />
 
             <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
-                <h1 className="hero-reveal font-serif text-primary text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] leading-[0.95] tracking-tight whitespace-pre-wrap">
-                    SignAnimate<span className="align-super text-[0.4em]">©</span> is a custom{'\n'}
-                    tool specializing in:
+                <h1 className="hero-reveal font-handwritten text-primary text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] leading-[1.02] whitespace-pre-wrap">
+                    Purpose built tool to animate your signature in
                 </h1>
 
                 <div className="hero-reveal mt-10 md:mt-12 flex flex-wrap justify-center gap-3 sm:gap-4 max-w-2xl px-4">

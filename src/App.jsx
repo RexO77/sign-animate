@@ -142,14 +142,14 @@ const VARIANT_HAPTIC = {
 // ─── BUTTON COMPONENT ─────────────────────────────────────────────────────────
 const Button = ({ children, variant = 'default', className = '', onClick, ...props }) => {
   const { haptic } = useHaptics();
-  const base = 'inline-flex items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:opacity-45 disabled:pointer-events-none';
+  const base = 'inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-5 py-2.5 font-sans text-sm font-semibold tracking-tight transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 disabled:pointer-events-none disabled:opacity-45';
   const variants = {
-    default: 'bg-accent text-bg hover:brightness-105',
-    ghost: 'text-primary/85 hover:bg-bg/78 hover:text-dark',
-    outline: 'border-primary/30 bg-bg text-primary hover:bg-bg/72',
-    danger: 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100',
-    primary: 'bg-accent text-bg hover:brightness-105',
-    export: 'bg-dark text-bg hover:bg-dark/90',
+    default: 'bg-primary text-surface shadow-[0_10px_22px_rgba(17,17,17,0.16)] hover:bg-primary/92 hover:shadow-[0_14px_24px_rgba(17,17,17,0.2)]',
+    ghost: 'border border-primary/10 bg-transparent text-primary/70 hover:bg-primary/5 hover:text-primary',
+    outline: 'border border-primary/20 bg-surface/85 text-primary hover:bg-surface',
+    danger: 'border border-red-300/50 bg-red-50 text-red-600 hover:bg-red-100',
+    primary: 'bg-primary text-surface shadow-[0_10px_22px_rgba(17,17,17,0.16)] hover:bg-primary/92 hover:shadow-[0_14px_24px_rgba(17,17,17,0.2)]',
+    export: 'bg-accent text-surface shadow-[0_10px_22px_rgba(255,72,27,0.22)] hover:bg-[#ef3f14] hover:shadow-[0_14px_24px_rgba(255,72,27,0.28)]',
   };
   const handleClick = (e) => {
     haptic(VARIANT_HAPTIC[variant] || 'click');
@@ -1088,7 +1088,7 @@ export default function App() {
                               exit={{ opacity: 0 }}
                               className="absolute inset-0 flex items-center justify-center pointer-events-none"
                             >
-                              <span className="text-primary/35 font-display italic text-xl tracking-wide">Sign here</span>
+                              <span className="text-primary/35 font-handwritten text-2xl tracking-wide">Sign here</span>
                             </Motion.div>
                           )}
                         </AnimatePresence>

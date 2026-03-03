@@ -10,7 +10,7 @@ const Footer = ({ onTryForFree }) => {
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
                 <div>
                     <p className="font-sans font-bold text-2xl tracking-tight text-primary">SignAnimate</p>
-                    <p className="font-serif italic text-primary/60 text-lg mt-1">Rare signatures, moving with intent.</p>
+                    <p className="font-handwritten text-primary/60 text-2xl mt-1">Rare signatures, moving with intent.</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8 w-full sm:w-auto">
