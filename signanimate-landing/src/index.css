@@ -149,8 +149,14 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 120px;
-  background: linear-gradient(to bottom, transparent, #FFF8F2);
+  height: 200px;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(255, 248, 242, 0.03) 20%,
+      rgba(255, 248, 242, 0.12) 40%,
+      rgba(255, 248, 242, 0.35) 60%,
+      rgba(255, 248, 242, 0.7) 80%,
+      #FFF8F2 100%);
   pointer-events: none;
   z-index: 2;
 }

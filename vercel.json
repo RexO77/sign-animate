@@ -1,16 +1,7 @@
 {
-    "outputDirectory": "dist",
     "rewrites": [
         {
-            "source": "/editor",
-            "destination": "/editor/index.html"
-        },
-        {
-            "source": "/editor/(.*)",
-            "destination": "/editor/index.html"
-        },
-        {
-            "source": "/((?!editor).*)",
+            "source": "/(.*)",
             "destination": "/index.html"
         }
     ]

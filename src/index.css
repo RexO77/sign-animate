@@ -32,7 +32,9 @@
 }
 
 @keyframes blink {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
 
@@ -207,6 +209,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .hero-grid,
   .hero-orb-one,
   .hero-orb-two,
@@ -274,13 +277,11 @@ input[type="range"]::-moz-range-thumb {
 /* ─── Ruled lines for draw canvas ─────────────────────────────────────────── */
 .ruled-lines {
   background-image:
-    repeating-linear-gradient(
-      to bottom,
+    repeating-linear-gradient(to bottom,
       transparent,
       transparent 35px,
       rgba(43, 33, 27, 0.22) 35px,
-      rgba(43, 33, 27, 0.22) 36px
-    );
+      rgba(43, 33, 27, 0.22) 36px);
   background-position: 0 8px;
 }
 
@@ -294,9 +295,209 @@ input[type="range"]::-moz-range-thumb {
 
 /* ─── Smooth page background ──────────────────────────────────────────────── */
 .page-bg {
-  background: linear-gradient(
-    180deg,
-    #fff8f2 0%,
-    #fff2e6 100%
-  );
+  background: linear-gradient(180deg,
+      #fff8f2 0%,
+      #fff2e6 100%);
+}
+
+/* ─── Landing page: guide shell grid overlay ──────────────────────────────── */
+.guide-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.guide-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to bottom,
+      rgba(43, 33, 27, 0.04) 0,
+      rgba(43, 33, 27, 0.04) 1px,
+      transparent 1px,
+      transparent 116px),
+    linear-gradient(to right,
+      transparent 24px,
+      rgba(43, 33, 27, 0.06) 24px,
+      rgba(43, 33, 27, 0.06) 25px,
+      transparent 25px),
+    linear-gradient(to right,
+      transparent 72px,
+      rgba(43, 33, 27, 0.06) 72px,
+      rgba(43, 33, 27, 0.06) 73px,
+      transparent 73px),
+    linear-gradient(to right,
+      transparent calc(50% - 0.5px),
+      rgba(43, 33, 27, 0.05) calc(50% - 0.5px),
+      rgba(43, 33, 27, 0.05) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)),
+    linear-gradient(to right,
+      transparent calc(100% - 72px),
+      rgba(43, 33, 27, 0.06) calc(100% - 72px),
+      rgba(43, 33, 27, 0.06) calc(100% - 71px),
+      transparent calc(100% - 71px)),
+    linear-gradient(to right,
+      transparent calc(100% - 24px),
+      rgba(43, 33, 27, 0.06) calc(100% - 24px),
+      rgba(43, 33, 27, 0.06) calc(100% - 23px),
+      transparent calc(100% - 23px));
+}
+
+/* ─── Landing page: section borders ───────────────────────────────────────── */
+.section-shell::before,
+.section-shell-dark::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 24px;
+  right: 24px;
+  pointer-events: none;
+  border-left: 1px dotted;
+  border-right: 1px dotted;
+}
+
+.section-shell::before {
+  border-color: rgba(43, 33, 27, 0.16);
+}
+
+.section-shell-dark::before {
+  border-color: rgba(255, 248, 242, 0.2);
+}
+
+/* ─── Landing page: hero scaffold ─────────────────────────────────────────── */
+.hero-scaffold {
+  background-color: #161311;
+  background-image:
+    repeating-linear-gradient(to bottom,
+      rgba(255, 248, 242, 0.11) 0,
+      rgba(255, 248, 242, 0.11) 1px,
+      transparent 1px,
+      transparent 92px),
+    linear-gradient(to right,
+      transparent 24px,
+      rgba(255, 248, 242, 0.16) 24px,
+      rgba(255, 248, 242, 0.16) 25px,
+      transparent 25px),
+    linear-gradient(to right,
+      transparent 72px,
+      rgba(255, 248, 242, 0.16) 72px,
+      rgba(255, 248, 242, 0.16) 73px,
+      transparent 73px),
+    linear-gradient(to right,
+      transparent calc(100% - 72px),
+      rgba(255, 248, 242, 0.16) calc(100% - 72px),
+      rgba(255, 248, 242, 0.16) calc(100% - 71px),
+      transparent calc(100% - 71px)),
+    linear-gradient(to right,
+      transparent calc(100% - 24px),
+      rgba(255, 248, 242, 0.16) calc(100% - 24px),
+      rgba(255, 248, 242, 0.16) calc(100% - 23px),
+      transparent calc(100% - 23px));
+}
+
+/* ─── Landing page: hero panel & fade ─────────────────────────────────────── */
+.hero-panel {
+  position: relative;
+  padding: 1.25rem;
+}
+
+.hero-fade-bridge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(255, 248, 242, 0.03) 20%,
+      rgba(255, 248, 242, 0.12) 40%,
+      rgba(255, 248, 242, 0.35) 60%,
+      rgba(255, 248, 242, 0.7) 80%,
+      #FFF8F2 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.outline-card {
+  position: relative;
+}
+
+/* ─── Landing page: marquee ───────────────────────────────────────────────── */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+
+.marquee-belt {
+  animation: marquee-scroll 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-belt {
+    animation: none !important;
+  }
+}
+
+/* ─── Landing page: mobile overrides ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .guide-shell::before {
+    background-image:
+      repeating-linear-gradient(to bottom,
+        rgba(43, 33, 27, 0.04) 0,
+        rgba(43, 33, 27, 0.04) 1px,
+        transparent 1px,
+        transparent 128px),
+      linear-gradient(to right,
+        transparent 20px,
+        rgba(43, 33, 27, 0.06) 20px,
+        rgba(43, 33, 27, 0.06) 21px,
+        transparent 21px),
+      linear-gradient(to right,
+        transparent calc(100% - 20px),
+        rgba(43, 33, 27, 0.06) calc(100% - 20px),
+        rgba(43, 33, 27, 0.06) calc(100% - 19px),
+        transparent calc(100% - 19px));
+  }
+
+  .hero-scaffold {
+    background-image:
+      repeating-linear-gradient(to bottom,
+        rgba(255, 248, 242, 0.11) 0,
+        rgba(255, 248, 242, 0.11) 1px,
+        transparent 1px,
+        transparent 104px),
+      linear-gradient(to right,
+        transparent 20px,
+        rgba(255, 248, 242, 0.16) 20px,
+        rgba(255, 248, 242, 0.16) 21px,
+        transparent 21px),
+      linear-gradient(to right,
+        transparent calc(100% - 20px),
+        rgba(255, 248, 242, 0.16) calc(100% - 20px),
+        rgba(255, 248, 242, 0.16) calc(100% - 19px),
+        transparent calc(100% - 19px));
+  }
+
+  .section-shell::before,
+  .section-shell-dark::before {
+    left: 20px;
+    right: 20px;
+  }
+
+  .hero-panel {
+    padding: 1rem;
+  }
 }

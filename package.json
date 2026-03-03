@@ -4,12 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "postinstall": "npm install --prefix signanimate-landing",
-    "dev": "npm run dev --prefix signanimate-landing",
+    "postinstall": "npm install --legacy-peer-deps --prefix signanimate-landing",
+    "dev": "vite",
     "dev:landing": "npm run dev --prefix signanimate-landing",
-    "dev:editor": "vite",
-    "build": "npm run build --prefix signanimate-landing && rm -rf dist && cp -r signanimate-landing/dist ./dist && vite build --outDir dist/editor",
-    "build:editor": "vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
