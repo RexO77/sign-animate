@@ -293,52 +293,74 @@
   }
 }
 
-/* ─── Custom range slider ─────────────────────────────────────────────────── */
-input[type="range"] {
+/* ─── Editor Range Slider ─────────────────────────────────────────────────── */
+.editor-app input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
   cursor: pointer;
-  height: 20px;
+  height: 28px;
+  touch-action: pan-x;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
+.editor-app input[type="range"]::-webkit-slider-runnable-track {
   height: 3px;
   border-radius: 9999px;
-  background: rgba(43, 33, 27, 0.24);
+  background: color-mix(in srgb, var(--color-primary, #111111) 22%, transparent);
 }
 
-input[type="range"]::-webkit-slider-thumb {
+.editor-app input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #c43700;
-  border: 2px solid #fff8f2;
-  box-shadow: 0 0 0 1px rgba(196, 55, 0, 0.24);
-  margin-top: -5.5px;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary, #111111) 30%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary, #111111) 10%, transparent);
+  margin-top: -6.5px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
+.editor-app input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 0 1px rgba(255, 72, 27, 0.4);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary, #111111) 16%, transparent);
 }
 
-input[type="range"]::-moz-range-track {
+.editor-app input[type="range"]::-moz-range-track {
   height: 3px;
   border-radius: 9999px;
-  background: rgba(43, 33, 27, 0.24);
+  background: color-mix(in srgb, var(--color-primary, #111111) 22%, transparent);
 }
 
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+.editor-app input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #c43700;
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px rgba(255, 72, 27, 0.24);
+  background: var(--color-surface, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary, #111111) 30%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary, #111111) 10%, transparent);
+}
+
+.editor-app input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #111111) 20%, transparent);
+}
+
+.editor-app input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #111111) 20%, transparent);
+}
+
+@media (max-width: 768px) {
+  .editor-app input[type="range"]::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+    margin-top: -7.5px;
+  }
+
+  .editor-app input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /* ─── Ruled lines for draw canvas ─────────────────────────────────────────── */
@@ -548,5 +570,155 @@ input[type="range"]::-moz-range-thumb {
 
   .hero-panel {
     padding: 1rem;
+  }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: #fff8f2;
+    color: #111111;
+  }
+}
+
+.editor-app {
+  --color-primary: #101418;
+  --color-accent: #101418;
+  --color-bg: #f6f8fb;
+  --color-dark: #0a0d10;
+  --color-surface: #ffffff;
+  --color-muted: #6b7280;
+  --editor-panel: #ffffff;
+  --editor-panel-border: rgba(16, 20, 24, 0.16);
+  --editor-divider: rgba(16, 20, 24, 0.12);
+  --editor-soft: #f7f9fc;
+  --editor-stage-bg: #ffffff;
+  --editor-grid: rgba(16, 20, 24, 0.03);
+  position: relative;
+  overflow-x: hidden;
+  background: #f7f8fa;
+  color-scheme: light;
+}
+
+.editor-app::before {
+  content: none;
+}
+
+.editor-topbar-inner {
+  border: 1px solid var(--editor-panel-border);
+  border-radius: 12px;
+  background: var(--editor-panel);
+  padding: 0.75rem 0.95rem;
+}
+
+.editor-stage-surface {
+  padding: 0.1rem;
+}
+
+.editor-preview-shell {
+  border-radius: 14px;
+  border: 1px solid var(--editor-panel-border);
+  background: var(--editor-stage-bg);
+}
+
+.editor-dropzone {
+  border: 1px dashed var(--editor-divider);
+  background: var(--editor-stage-bg);
+  transition: border-color 220ms ease, background-color 220ms ease;
+}
+
+.editor-dropzone-active {
+  border-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  background: #fbfdff;
+}
+
+.editor-canvas-shell {
+  border: 1px solid var(--editor-panel-border);
+  background: var(--editor-stage-bg);
+}
+
+.editor-canvas-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, transparent 0%, var(--editor-grid) 12%, var(--editor-grid) 88%, transparent 100%);
+}
+
+.editor-inspector {
+  position: sticky;
+  top: 5.7rem;
+  align-self: start;
+  border: 1px solid var(--editor-panel-border);
+  border-radius: 12px;
+  background: var(--editor-panel);
+  padding: 1rem;
+}
+
+.editor-inspector-head {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--editor-divider);
+}
+
+.editor-section {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--editor-divider);
+}
+
+.editor-section-disabled {
+  opacity: 0.52;
+  pointer-events: none;
+  user-select: none;
+}
+
+.editor-chip,
+.editor-tab-btn {
+  border: 1px solid var(--editor-divider);
+  background: var(--editor-soft);
+  color: var(--color-primary);
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.editor-chip:hover,
+.editor-tab-btn:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 26%, transparent);
+  background: #ffffff;
+}
+
+.editor-chip.is-active,
+.editor-tab-btn.is-active {
+  border-color: var(--editor-panel-border);
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.editor-chip:focus-visible,
+.editor-tab-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  outline-offset: 1px;
+}
+
+.editor-app .ruled-lines {
+  background-image:
+    repeating-linear-gradient(to bottom,
+      transparent,
+      transparent 35px,
+      color-mix(in srgb, var(--color-primary) 12%, transparent) 35px,
+      color-mix(in srgb, var(--color-primary) 12%, transparent) 36px);
+  background-position: 0 8px;
+}
+
+@media (max-width: 1280px) {
+  .editor-inspector {
+    position: relative;
+    top: auto;
   }
 }
