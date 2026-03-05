@@ -9,6 +9,7 @@ A web app that turns your signature into a smooth, animated SVG — draw it live
 - **Animation Styles** — Letter by Letter, Continuous Flow, or Classic playback
 - **Speed Control** — Adjustable animation speed slider
 - **Export** — Download SVG/PNG, plus animated GIF and MP4 outputs
+- **Reliability Fallback** — Automatically switches to server-side export when browser encoding fails
 
 ## Tech Stack
 

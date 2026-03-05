@@ -1,4 +1,4 @@
-import { computeTiming } from '../pathOrder';
+import { computeTiming } from '../pathOrder.js';
 
 const DEFAULT_VIEWBOX = '0 0 646 226';
 

@@ -1,23 +1,47 @@
 import React, { useRef, useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Copy, Code, FileImage, Download, Film, Loader2 } from 'lucide-react';
+import { X, Check, Copy, Code, FileImage, Download, Film, Loader2, Cloud } from 'lucide-react';
 import { useHaptics } from '../useHaptics';
 import { buildAnimationModel } from '../export/animationModel';
 import { downloadBlob, downloadFile, downloadPNG } from '../export/staticExport';
+import { ExportError, ExportErrorCode } from '../export/exportErrors';
+import { createExportJob, downloadExportJob, pollExportJob } from '../export/serverExportClient';
 
 function normalizeError(error) {
   if (error instanceof Error && error.message) return error.message;
   return 'Export failed. Please try again.';
 }
 
+function makeIdempotencyKey(format) {
+  const suffix = Math.random().toString(36).slice(2, 10);
+  const uuid = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `legacy-${Date.now()}-${suffix}`;
+  return `${format}-${uuid}`;
+}
+
+function base64ToBlob(base64, mimeType) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType || 'application/octet-stream' });
+}
+
 const EMPTY_EXPORT_STATE = {
   isExporting: false,
   format: null,
+  route: null,
   stage: 'idle',
   progress: 0,
   error: '',
   failedFormat: null,
+  switchedToCloud: false,
+  localError: null,
 };
+
+const FALLBACK_MESSAGE = 'Local encoder failed. Switching to cloud export...';
 
 export default function ExportModal({
   buttonComponent,
@@ -58,6 +82,7 @@ export default function ExportModal({
       failedFormat,
       isExporting: false,
       stage: 'idle',
+      route: null,
       format: null,
       progress: 0,
     }));
@@ -85,16 +110,82 @@ export default function ExportModal({
     }
   };
 
+  const runCloudFallback = async (format, localError) => {
+    const idempotencyKey = makeIdempotencyKey(format);
+
+    setExportState((prev) => ({
+      ...prev,
+      route: 'cloud',
+      stage: 'cloud_queue',
+      switchedToCloud: true,
+      progress: 0,
+      localError: localError.code || null,
+    }));
+
+    const { getPresetForFormat } = await import('../export/animatedExport');
+
+    const payload = {
+      format,
+      animation: {
+        ...animationPayload,
+        animStyle: animationPayload.animStyle || 'classic',
+        animSpeed: animationPayload.animSpeed || 1,
+        clusterMeta: animationPayload.clusterMeta || [],
+      },
+      preset: getPresetForFormat(format),
+      reason: localError.code || ExportErrorCode.ENCODE_NONZERO_EXIT,
+      idempotencyKey,
+    };
+
+    const createResponse = await createExportJob(payload);
+    const job = createResponse?.job;
+
+    if (createResponse?.inlineResult?.fileBase64) {
+      const blob = base64ToBlob(createResponse.inlineResult.fileBase64, createResponse.inlineResult.mimeType);
+      const filename = createResponse.inlineResult.filename || `signature.${format}`;
+      downloadBlob(blob, filename);
+      return;
+    }
+
+    if (!job?.jobId) {
+      throw new ExportError(
+        ExportErrorCode.FALLBACK_FAILED,
+        'Cloud fallback did not return a valid job id.',
+        { createResponse },
+      );
+    }
+
+    let finalJob = job;
+    if (finalJob.status !== 'completed') {
+      finalJob = await pollExportJob(job.jobId, {
+        onUpdate: (update) => {
+          setExportState((prev) => ({
+            ...prev,
+            route: 'cloud',
+            stage: 'cloud_processing',
+            progress: typeof update.progress === 'number' ? update.progress : prev.progress,
+          }));
+        },
+      });
+    }
+
+    const downloadResult = await downloadExportJob(finalJob.jobId);
+    downloadBlob(downloadResult.blob, downloadResult.filename || `signature.${format}`);
+  };
+
   const handleAnimatedExport = async (format) => {
     if (exportState.isExporting) return;
 
     setExportState({
       isExporting: true,
       format,
-      stage: 'render',
+      route: 'local',
+      stage: 'render_local',
       progress: 0,
       error: '',
       failedFormat: null,
+      switchedToCloud: false,
+      localError: null,
     });
 
     try {
@@ -114,17 +205,61 @@ export default function ExportModal({
 
       downloadBlob(blob, `signature.${format}`);
       setExportState(EMPTY_EXPORT_STATE);
+      return;
     } catch (error) {
-      setStaticExportError(error, format);
+      const localError = error instanceof ExportError
+        ? error
+        : new ExportError(ExportErrorCode.ENCODE_NONZERO_EXIT, normalizeError(error));
+
+      setExportState((prev) => ({
+        ...prev,
+        stage: 'fallback_eligible',
+        switchedToCloud: true,
+        error: FALLBACK_MESSAGE,
+      }));
+
+      try {
+        await runCloudFallback(format, localError);
+        setExportState(EMPTY_EXPORT_STATE);
+      } catch (fallbackError) {
+        const detail = fallbackError instanceof ExportError
+          ? fallbackError
+          : new ExportError(ExportErrorCode.FALLBACK_FAILED, normalizeError(fallbackError));
+
+        setExportState((prev) => ({
+          ...prev,
+          isExporting: false,
+          stage: 'idle',
+          route: null,
+          progress: 0,
+          failedFormat: format,
+          error: `Local export failed (${localError.code || 'unknown'}). Cloud fallback failed: ${detail.message}`,
+        }));
+      }
     }
   };
 
   const exportStatusMessage = (() => {
+    if (exportState.stage === 'fallback_eligible') {
+      return FALLBACK_MESSAGE;
+    }
+
     if (exportState.isExporting) {
-      if (exportState.stage === 'render') {
-        const percent = Math.round(exportState.progress * 100);
-        return `Rendering frames... ${percent}%`;
+      if (exportState.route === 'cloud') {
+        if (exportState.stage === 'cloud_queue') return 'Queued cloud export job...';
+        const percent = Math.round((exportState.progress || 0) * 100);
+        return `Cloud encoding ${(exportState.format || '').toUpperCase()}... ${percent}%`;
       }
+
+      if (exportState.stage === 'render_local') {
+        const percent = Math.round(exportState.progress * 100);
+        return `Rendering frames locally... ${percent}%`;
+      }
+
+      if (exportState.stage === 'encode_local') {
+        return `Encoding ${(exportState.format || '').toUpperCase()} locally...`;
+      }
+
       return `Encoding ${(exportState.format || '').toUpperCase()}...`;
     }
 
@@ -264,6 +399,11 @@ export default function ExportModal({
                 <p className={`mt-3 text-center text-xs ${exportState.error ? 'text-red-600' : 'text-primary/55'}`}>
                   {exportStatusMessage}
                 </p>
+                {exportState.switchedToCloud && !exportState.error && (
+                  <p className="mt-1 flex items-center justify-center gap-1 text-xs text-primary/55">
+                    <Cloud className="h-3.5 w-3.5" /> Cloud fallback active
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3 border-t border-primary/10 px-6 py-4 md:px-8">
