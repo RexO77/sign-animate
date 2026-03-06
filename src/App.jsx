@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, PenTool } from 'lucide-react';
+import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, PenTool, Heart } from 'lucide-react';
 import { orderPaths, computeTiming, getPathBBox } from './pathOrder';
 import { useHaptics } from './useHaptics';
 import ExportModal from './components/ExportModal';
@@ -513,7 +513,7 @@ export default function App() {
   const controlsLocked = !hasResults;
 
   return (
-    <div className="editor-app min-h-screen font-body text-primary">
+    <div className="editor-app flex min-h-[100svh] flex-col font-body text-primary">
       <header className="px-4 pt-4 sm:px-6 md:px-10 md:pt-6">
         <div className="editor-topbar-inner mx-auto flex w-full max-w-[1400px] items-center justify-between">
           <div className="flex items-center gap-3">
@@ -531,7 +531,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="relative z-10 px-4 pb-14 pt-4 sm:px-6 md:px-10">
+      <main className="relative z-10 flex-1 px-4 pb-14 pt-4 sm:px-6 md:px-10">
         <div className="mx-auto grid w-full max-w-[1400px] gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
           <section>
             <div className="mb-4 flex flex-col gap-3 md:mb-5 md:flex-row md:items-end md:justify-between">
@@ -827,10 +827,12 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="relative z-10 px-4 pb-8 sm:px-6 md:px-10">
+      <footer className="relative z-10 mt-auto shrink-0 px-4 pb-8 sm:px-6 md:px-10">
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between border-t border-primary/12 pt-4">
-          <p className="font-sans text-xs text-muted">Professional signature animation workflow.</p>
-          <p className="font-sans text-xs text-muted">System adaptive UI</p>
+          <p className="font-sans text-xs text-muted">Animate your signatures</p>
+          <p className="flex items-center gap-1 font-sans text-xs text-muted">
+            Built with <Heart className="h-3.5 w-3.5 fill-current" /> by Nischal
+          </p>
         </div>
       </footer>
 
