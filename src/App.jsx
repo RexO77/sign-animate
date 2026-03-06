@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, PenTool, Heart } from 'lucide-react';
+import { Upload, Loader2, RefreshCw, Pencil, Image as ImageIcon, Undo, Trash2, Play, SlidersHorizontal, Gauge, RotateCcw, Settings, Download, Heart } from 'lucide-react';
 import { orderPaths, computeTiming, getPathBBox } from './pathOrder';
 import { useHaptics } from './useHaptics';
 import ExportModal from './components/ExportModal';
@@ -517,8 +517,8 @@ export default function App() {
       <header className="px-4 pt-4 sm:px-6 md:px-10 md:pt-6">
         <div className="editor-topbar-inner mx-auto flex w-full max-w-[1400px] items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-surface">
-              <PenTool className="h-5 w-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-md border border-primary/15 bg-surface shadow-sm">
+              <img src="/logo.svg" alt="S." className="h-6 w-6 select-none" />
             </div>
             <div>
               <p className="font-sans text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-muted/70">SignAnimate</p>

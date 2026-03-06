@@ -15,8 +15,8 @@ const Navbar = ({ scrolled, onTryForFree }) => {
                     : 'bg-surface/40 backdrop-blur-md border-primary/5 shadow-transparent'
                     }`}
             >
-                <a href="#top" className="flex items-center gap-2 group shrink-0">
-                    <span className="font-sans font-bold tracking-tight text-lg text-primary">SignAnimate</span>
+                <a href="#top" aria-label="SignAnimate home" className="flex items-center gap-2 group shrink-0">
+                    <img src="/logo.svg" alt="S." className="h-8 w-8 select-none" />
                 </a>
 
                 <div className="hidden md:flex flex-1 items-center justify-center gap-8 border-l border-r border-primary/10 mx-6 px-6 h-6">

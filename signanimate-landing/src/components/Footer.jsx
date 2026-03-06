@@ -9,7 +9,7 @@ const Footer = ({ onTryForFree }) => {
         <footer className="w-full bg-surface text-primary px-6 md:px-14 py-16 border-t border-primary/5 pb-24">
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
                 <div>
-                    <p className="font-sans font-bold text-2xl tracking-tight text-primary">SignAnimate</p>
+                    <img src="/logo.svg" alt="S." className="h-10 w-10 select-none" />
                     <p className="font-handwritten text-primary/60 text-2xl mt-1">Rare signatures, moving with intent.</p>
                 </div>
 
